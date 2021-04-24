@@ -7,9 +7,9 @@
 
 <svelte:head>
   <!-- Primary Meta Tags -->
-  <title>SvelteKit ❤️ Tailwind 2</title>
-  <meta name="title" content="SvelteKit ❤️ Tailwind 2" />
-  <meta name="description" content="SvelteKit and Tailwind 2 toggle dark/light theme demo" />
+  <title>incoherent</title>
+  <meta name="title" content="incoherent" />
+  <meta name="description" content="incoherent - privacy with NFT art on the secret network" />
   <meta name="keywords" content="Svelte, SvelteKit, Svelte-kit, Tailwind, HTML, CSS, JavaScript" />
   <meta name="author" content="@dansvel" />
   <!-- Open Graph / Facebook -->

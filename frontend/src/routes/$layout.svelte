@@ -1,4 +1,6 @@
 <script lang="ts">
+  import Header from '$lib/layout/header.svelte'
+
   import '../global.postcss'
   import { theme } from './store'
   import { onMount } from 'svelte'
@@ -11,5 +13,7 @@
 </script>
 
 <main>
+  <Header />
+
   <slot />
 </main>
