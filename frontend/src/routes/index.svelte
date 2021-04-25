@@ -3,6 +3,8 @@
   import ToggleTheme from '$lib/ToggleTheme.svelte'
   import Counter from '$lib/Counter.svelte'
   import Timer from '$lib/Timer.svelte'
+  import Logo from '$lib/logo/logo.svelte'
+  import Title from '$lib/logo/title.svelte'
 </script>
 
 <svelte:head>
@@ -57,6 +59,10 @@
 
 <Timer />
 <Counter />
+<Logo /> 
+<Title /> 
+
+
 
 <style lang="postcss">
   p {
