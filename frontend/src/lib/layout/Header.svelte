@@ -1,8 +1,10 @@
 <script lang="ts">
   import ThemeIcon from '$lib/ThemeIcon.svelte'
+  import Logo from '$lib/logo/logo.svelte'
 </script>
 
 <div class="nav-bar">
+  <Logo/>
   <div />
   <nav>
     <a href=".">home</a>
@@ -13,12 +15,13 @@
   </div>
 </div>
 
-<style lang="postcss">
+<style lang="scss">
+
   .nav-bar {
     position: absolute;
     top: 0;
     left: 0;
-    height: 5vh;
+    height: 7vh;
     width: 100vw;
     display: flex;
     align-items: center;

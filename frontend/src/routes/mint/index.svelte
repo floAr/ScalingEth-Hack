@@ -1,7 +1,12 @@
 <script lang="ts">
+import { getFile, storeFile } from "$lib/modules/ipfs/ipfs-store";
+
+
   let mintInput
   let title, description, img
   let mintObject: { title: string; description: string; mintImg: string }
+
+  let testcid=undefined
 
   const onFileSelected = e => {
     let image = e.target.files[0]
@@ -12,9 +17,12 @@
     }
   }
 
-  function mintImage() {
-    mintObject = { title: title, description: description, mintImg: img }
+  async function mintImage() {
+    const iCid= await storeFile(img)
+    mintObject = { title: title, description: description, mintImg: iCid }
     console.log(mintObject)
+    testcid=iCid
+    getFile(iCid)
   }
 </script>
 
@@ -52,6 +60,9 @@
     >
       mint
     </button>
+    {#if testcid}
+    <div class="preview-img"><img src="https://ipfs.io/ipfs/{img}" alt="d" /></div>
+    {/if}
   </div>
   <input
     style="display:none"
@@ -62,7 +73,7 @@
   />
 </div>
 
-<style lang="postcss">
+<style lang="scss">
   *:focus {
     outline: none;
   }

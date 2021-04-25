@@ -1,6 +1,6 @@
 <script lang="ts">
-  export const textStroke = '#220211'
-  export const textFill = '#110111'
+  export const textStroke = '#FF0000'
+  export const textFill = '#F00FFF'
 
   export const circleStroke = '#100000'
   export const circleFill = '#110111'
