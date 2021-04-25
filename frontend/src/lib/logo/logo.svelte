@@ -48,7 +48,7 @@
       </filter>
     </defs>
 
-    <g fill={textFill} stroke={textStroke}>
+    <g  stroke={textStroke}>
       <text
         x="49%"
         y="68%"
@@ -83,65 +83,64 @@
   </svg>
 </div>
 
-<style lang="postcss">
+<style lang="scss">
+	text {
+		fill: var(--theme-colors-text, initial);
+		stroke: var(--theme-colors-text, initial);
+	}
+
+  path {
+    fill: var(--theme-colors-background-contrast, initial);
+		stroke: var(--theme-colors-background-contrast, initial);
+  }
   .logo_container_row {
     display: flex;
   }
 
   .logo_layer1 {
     width: 100%;
-    /* background-color: rgba(255, 0, 0, 0.5); */
-    -webkit-animation: spin1 300s infinite linear;
-    -moz-animation: spin1 300s infinite linear;
-    -o-animation: spin1 300s infinite linear;
-    -ms-animation: spin1 300s infinite linear;
-    animation: spin1 300s infinite linear;
+ 
+    -webkit-animation: rotating 300s linear infinite;
+  -moz-animation: rotating 300s linear infinite;
+  -ms-animation: rotating 300s linear infinite;
+  -o-animation: rotating 300s linear infinite;
+  animation: rotating 300s linear infinite;
   }
 
   .logo_layer2 {
     width: 100%;
     margin-left: -100%;
-    /* background-color: rgba(0, 0, 255, 0.5); */
   }
 
-  @-webkit-keyframes spin1 {
-    0% {
-      -webkit-transform: rotate(0deg);
-    }
-    100% {
-      -webkit-transform: rotate(360deg);
-    }
+  @-webkit-keyframes rotating /* Safari and Chrome */ {
+  from {
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
   }
-  @-moz-keyframes spin1 {
-    0% {
-      -moz-transform: rotate(0deg);
-    }
-    100% {
-      -moz-transform: rotate(360deg);
-    }
+  to {
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
   }
-  @-o-keyframes spin1 {
-    0% {
-      -o-transform: rotate(0deg);
-    }
-    100% {
-      -o-transform: rotate(360deg);
-    }
+}
+@keyframes rotating {
+  from {
+    -ms-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
   }
-  @-ms-keyframes spin1 {
-    0% {
-      -ms-transform: rotate(0deg);
-    }
-    100% {
-      -ms-transform: rotate(360deg);
-    }
+  to {
+    -ms-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
   }
-  @-keyframes spin1 {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  }
+}
+
+
+
 </style>

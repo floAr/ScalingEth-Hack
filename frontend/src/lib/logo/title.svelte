@@ -24,3 +24,10 @@
     </g>
   </svg>
 </div>
+
+<style lang="scss">
+	text {
+		fill: var(--theme-colors-text, initial);
+		stroke: var(--theme-colors-text, initial);
+	}
+  </style>
