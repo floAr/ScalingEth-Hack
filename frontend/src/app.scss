@@ -5,3 +5,46 @@
 };
 
 
+.tata.text {
+	color:  var(--theme-colors-text);
+	background: var(--theme-colors-background-contrast);
+  }
+  
+  .tata.log {
+	color:  var(--theme-colors-text);
+	background: var(--theme-colors-background-contrast);
+  }
+  
+  .tata.info {	  
+	color:  var(--theme-colors-text);
+	background: var(--theme-colors-background-contrast);
+  }
+  
+  .tata.warn {
+	color:  var(--theme-colors-text);
+	background:  var(--theme-colors-yellow);
+  }
+  
+  .tata.error {
+	color:  var(--theme-colors-text);
+	background: var(--theme-colors-red);
+  }
+  
+  .tata.success {
+	color:  var(--theme-colors-text);
+	background: var(--theme-colors-green);
+  }
+
+/* SCSS */
+@mixin keyframes($name) {
+	@-webkit-keyframes #{$name} {
+	  @content;
+	}
+	@-moz-keyframes #{$name} {
+	  @content;
+	}
+	@keyframes #{$name} {
+	  @content;
+	}
+ }
+
