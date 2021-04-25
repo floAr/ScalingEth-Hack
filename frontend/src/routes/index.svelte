@@ -6,6 +6,7 @@
 	import Title from '$lib/logo/title.svelte';
 	import { onMount } from 'svelte';
 	import { toastStore } from '$lib/modules/toast/toast-store';
+  import Flow from '$lib/components/flow.svelte'
 
 	onMount(async () => {
 		await toastStore.enableToast();
@@ -43,28 +44,8 @@
 		content="https://github.com/dansvel/sveltekit-typescript-postcss-tailwind2/raw/master/screenshot.png"
 	/>
 </svelte:head>
+<Flow/>
 
-<h1 class="text-5xl font-extrabold mb-2">Hello {$theme} world!</h1>
-<h2 class="text-3xl font-bold mb-4">Now using SvelteKit beta</h2>
-
-<pre>
-@sveltejs/kit 1.0.0.next-71
-@sveltejs/adapter-static 1.0.0.next-4
-</pre>
-
-
-<blockquote class="text-xl p-2 bg-gray-200 dark:bg-gray-800 mb-2 transition-colors duration-500">
-	<a href="https://github.com/dansvel/sveltekit-typescript-postcss-tailwind2"><b>Github repo</b></a>
-</blockquote>
-<p>
-	Visit the <a href="https://svelte.dev">svelte.dev</a> to learn how to build Svelte apps.
-</p>
-<p>The title is using utility class, but all other elements is using style component.</p>
-<p>Just check <code>src/routes/index.svelte</code> to see the code.</p>
-
-<Timer />
-<Counter />
-<Logo />
 <Title />
 
 <style lang="scss">
