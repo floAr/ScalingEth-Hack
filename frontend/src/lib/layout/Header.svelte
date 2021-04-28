@@ -1,36 +1,44 @@
 <script lang="ts">
   import ThemeIcon from '$lib/ThemeIcon.svelte'
   import Logo from '$lib/logo/logo.svelte'
+
+  let connected = false
 </script>
 
 <div class="nav-bar">
   <div class="nav-container">
-    <div class="header-link">
-      <a href=".">Feed</a>
+    <div class="header-container">
+      <div class="header-link">
+        <a href=".">Feed</a>
+      </div>
     </div>
-    <div class="header-logo">
+    <div
+      class="header-logo"
+      on:click={() => {
+        console.log('clicked logo')
+      }}
+    >
       <Logo />
-      <div class="toast-login">click to connect keplr</div>
+      {#if !connected}
+        <div class="toast-login">click to connect keplr</div>
+      {/if}
     </div>
-    <div class="header-link">
-      <a href="mint">Manufaktur</a>
+    <div class="header-container">
+      <div class="header-link">
+        <a href="mint">Manufaktur</a>
+      </div>
     </div>
   </div>
-
-  <!-- <div class="theme-icon">
-    <ThemeIcon size={25} />
-  </div> -->
 </div>
 <hr class="rounded" />
 
 <style lang="scss">
-
-.nav-container {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-}
+  .nav-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
   .header-logo {
     width: 100px;
     position: relative;
@@ -48,13 +56,22 @@
   }
 
   .header-container {
+    display:flex;
+    flex-direction: row;
+    justify-content: flex-start;
     min-width: 20vw;
+    padding-left: 30px;
+  }
+
+  .header-container:nth-child(1) {
+    justify-content: flex-end;
+    padding-left: none;
+    padding-right: 30px;
   }
 
   .header-link {
     position: relative;
     overflow: hidden;
-    margin: 0 10vw;
   }
 
   .header-link a {
