@@ -1,12 +1,11 @@
 <script lang="ts">
-import { getFile, storeFile } from "$lib/modules/ipfs/ipfs-store";
-
+  import { getFile, storeFile } from '$lib/modules/ipfs/ipfs-store'
 
   let mintInput
   let title, description, img
   let mintObject: { title: string; description: string; mintImg: string }
 
-  let testcid=undefined
+  let testcid = undefined
 
   const onFileSelected = e => {
     let image = e.target.files[0]
@@ -18,10 +17,10 @@ import { getFile, storeFile } from "$lib/modules/ipfs/ipfs-store";
   }
 
   async function mintImage() {
-    const iCid= await storeFile(img)
+    const iCid = await storeFile(img)
     mintObject = { title: title, description: description, mintImg: iCid }
     console.log(mintObject)
-    testcid=iCid
+    testcid = iCid
     getFile(iCid)
   }
 </script>
@@ -34,23 +33,27 @@ import { getFile, storeFile } from "$lib/modules/ipfs/ipfs-store";
   <div class="mint-container">
     <span class="mint-header">mint <span class="underlined-text">{title || 'img'}</span></span>
 
-    <div class="mint-input-wrapper">
-      <input bind:value={title} placeholder="enter the title" />
+    <div class="mint-input-container">
+      <div class="mint-input-wrapper">
+        <input bind:value={title} placeholder="enter the title" />
+      </div>
+      <div class="mint-input-wrapper">
+        <input bind:value={description} placeholder="enter the description" />
+      </div>
+      <div class="mint-img-container">
+        <span
+          class="img-selector"
+          on:click={() => {
+            mintInput.click()
+          }}
+        >
+          Choose Image
+        </span>
+        {#if img}
+          <div class="preview-img"><img src={img} alt="d" /></div>
+        {/if}
+      </div>
     </div>
-    <div class="mint-input-wrapper">
-      <input bind:value={description} placeholder="enter the description" />
-    </div>
-    {#if img}
-      <div class="preview-img"><img src={img} alt="d" /></div>
-    {/if}
-    <span
-      class="img-selector"
-      on:click={() => {
-        mintInput.click()
-      }}
-    >
-      Choose Image
-    </span>
 
     <button
       class="hae-button"
@@ -61,7 +64,7 @@ import { getFile, storeFile } from "$lib/modules/ipfs/ipfs-store";
       mint
     </button>
     {#if testcid}
-    <div class="preview-img"><img src="https://ipfs.io/ipfs/{img}" alt="d" /></div>
+      <div class="preview-img"><img src="https://ipfs.io/ipfs/{img}" alt="d" /></div>
     {/if}
   </div>
   <input
@@ -81,11 +84,18 @@ import { getFile, storeFile } from "$lib/modules/ipfs/ipfs-store";
   .mint-container {
     display: flex;
     flex-direction: column;
-    width: 80vw;
+    align-items: center;
+    justify-content: center;
+    min-width: 80vw;
   }
 
   .mint-container span {
     width: max-content;
+  }
+
+  .mint-img-container {
+    display: flex;
+    flex-direction: row;
   }
 
   .img-selector {
