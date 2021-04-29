@@ -1,8 +1,12 @@
 <script lang="ts">
   import ThemeIcon from '$lib/ThemeIcon.svelte'
   import Logo from '$lib/logo/logo.svelte'
+  import { SecretStore } from '$lib/modules/secret/secret-store'
 
-  let connected = false
+  async function connect() {
+    await SecretStore.setBrowserProvider('holodeck-2')
+    
+  }
 </script>
 
 <div class="nav-bar">
@@ -15,12 +19,14 @@
     <div
       class="header-logo"
       on:click={() => {
-        console.log('clicked logo')
+        connect()
       }}
     >
       <Logo />
-      {#if !connected}
+      {#if $SecretStore.account?.address===undefined}
         <div class="toast-login">click to connect keplr</div>
+        {:else}
+        <div class="toast-login">{$SecretStore.account?.address}</div>
       {/if}
     </div>
     <div class="header-container">
@@ -56,7 +62,7 @@
   }
 
   .header-container {
-    display:flex;
+    display: flex;
     flex-direction: row;
     justify-content: flex-start;
     min-width: 20vw;
