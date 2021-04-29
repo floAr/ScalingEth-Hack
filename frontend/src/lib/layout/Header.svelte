@@ -1,7 +1,7 @@
 <script lang="ts">
   import ThemeIcon from '$lib/ThemeIcon.svelte'
   import Logo from '$lib/logo/logo.svelte'
-  import { SecretStore } from '$lib/modules/secret/secret-store'
+  import { SecretStore, status } from '$lib/modules/secret/secret-store'
 
   async function connect() {
     await SecretStore.setBrowserProvider('holodeck-2')
@@ -23,8 +23,10 @@
       }}
     >
       <Logo />
-      {#if $SecretStore.account?.address===undefined}
+      {#if $status==='undefined'}
         <div class="toast-login">click to connect keplr</div>
+        {:else if $status === 'working'}
+        <div class="toast-login">working</div>
         {:else}
         <div class="toast-login">{$SecretStore.account?.address}</div>
       {/if}
