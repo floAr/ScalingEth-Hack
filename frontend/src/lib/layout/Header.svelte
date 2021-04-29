@@ -58,6 +58,7 @@
     font-weight: normal;
     font-size: x-small;
     position: absolute;
+    min-width: max-content;
     width: 200%;
     left: -50%;
     text-align: center;
