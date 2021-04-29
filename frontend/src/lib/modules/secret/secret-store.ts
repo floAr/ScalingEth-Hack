@@ -43,7 +43,7 @@ export type KeplrReducerActions = { type: 'init', chainId: ChainId } |
 
 
 export const createStore = () => {
-    const { subscribe, set, update } = writable<KeplrState>({
+    const { subscribe, update } = writable<KeplrState>({
         chainId: '',
         connected: false,
         status: 'undefined',
@@ -101,6 +101,24 @@ export const createStore = () => {
             default:
                 throw new Error();
         }
+    }
+
+    const randomString = (length: number) => {
+        let result = ''
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+        const charactersLength = characters.length
+        for (let i = 0; i < length; i += 1) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength))
+        }
+        return result
+    }
+
+    const getEntropy = () => {
+        return btoa(randomString(15))
+    }
+
+    const createPadding = (currentLength: number, targetLength: number) => {
+        return randomString(targetLength - currentLength)
     }
 
     const setBrowserProvider = async (chainId: ChainId) => {
@@ -184,7 +202,7 @@ export const createStore = () => {
             window.cosmJS = cosmJS
 
             if (account !== undefined) {
-                toast?.success('Connected succesfully', "Account: "+account.address)
+                toast?.success('Connected succesfully', "Account: " + account.address)
                 dispatch({
                     type: 'connected',
                     account,
@@ -204,7 +222,10 @@ export const createStore = () => {
     }
     return {
         subscribe,
-        setBrowserProvider
+        setBrowserProvider,
+        createPadding,
+        getEntropy,
+        dispatch
     }
 }
 
@@ -216,9 +237,11 @@ export const connected = derived(SecretStore, $SecretStore => $SecretStore.conne
 
 export const selectedAccount = derived(
     SecretStore,
-  $SecretStore => $SecretStore.account
+    $SecretStore => $SecretStore.account
 )
 
 export const client = derived(SecretStore, $SecretStore => $SecretStore?.client)
 export const chainId = derived(SecretStore, $SecretStore => $SecretStore.chainId)
 export const status = derived(SecretStore, $SecretStore => $SecretStore.status)
+
+
