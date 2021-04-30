@@ -59,8 +59,8 @@
     font-size: x-small;
     position: absolute;
     min-width: max-content;
-    width: 200%;
-    left: -50%;
+    width: 300%;
+    left: -100%;
     text-align: center;
   }
 

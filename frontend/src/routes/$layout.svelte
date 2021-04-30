@@ -29,5 +29,6 @@
 	:global(body) {
 		background-color: var(--theme-colors-background, initial);
 		color: var(--theme-colors-text, initial);
+		margin: 0;
 	}
 </style>
