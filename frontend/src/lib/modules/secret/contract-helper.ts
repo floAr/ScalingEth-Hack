@@ -23,13 +23,14 @@ if (browser)
 
 
 export type HumanAddr = string
+export type InteractionError= 'decryption'|'other'
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export async function query<IN extends object, OUT>(address: HumanAddr, query_msg: IN): Promise<OUT> {
     SecretStore.dispatch({ type: 'transact' })
     try {
         const resp = await client.queryContractSmart(address, query_msg)
-        SecretStore.dispatch({ type: 'transact' })
+        SecretStore.dispatch({ type: 'success' })
         return resp
     }
     catch (err) {
@@ -56,4 +57,8 @@ export async function transact<IN extends object, OUT>(address: HumanAddr, msg: 
     }
     SecretStore.dispatch({ type: 'success' })
     return JSON.parse(new TextDecoder().decode(resp.data)) as OUT
+}
+
+export function parseError(err:any):InteractionError{
+    return "other" 
 }
