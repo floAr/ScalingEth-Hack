@@ -14,7 +14,7 @@
   <div class="nav-container">
     <div class="header-container left">
       <div class="header-link">
-        <a href=".">Feed</a>
+        <a href=".">Schaufenster</a>
       </div>
     </div>
     <div
