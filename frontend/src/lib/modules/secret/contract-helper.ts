@@ -5,10 +5,13 @@ import type { toast_module } from "../toast/toast";
 import { toastStore } from "../toast/toast-store";
 import { SecretStore } from "./secret-store";
 
+
 let client: SigningCosmWasmClient = undefined
+let workingOnQuery = false;
 if (browser) {
     SecretStore.subscribe(value => {
         client = value.client
+        workingOnQuery = value.config.queryAsWorking ?? false;
     })
 }
 
@@ -23,18 +26,28 @@ if (browser)
 
 
 export type HumanAddr = string
-export type InteractionError= 'decryption'|'other'
+export interface InteractionError {
+    type: 'no client' | 'decryption' | 'other',
+    errTitle: string,
+    errBody: string
+}
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export async function query<IN extends object, OUT>(address: HumanAddr, query_msg: IN): Promise<OUT> {
-    SecretStore.dispatch({ type: 'transact' })
+    if (client == null) {
+        parseError("client is null or undefined", true)
+        return
+    }
+    if (workingOnQuery)
+        SecretStore.dispatch({ type: 'transact' })
     try {
         const resp = await client.queryContractSmart(address, query_msg)
-        SecretStore.dispatch({ type: 'success' })
+        if (workingOnQuery)
+            SecretStore.dispatch({ type: 'success' })
         return resp
     }
     catch (err) {
-        toast.error('Error running query', err)
+        const errType = parseError(err, true)
     }
     const resp = await client.queryContractSmart(address, query_msg)
     return resp
@@ -42,6 +55,10 @@ export async function query<IN extends object, OUT>(address: HumanAddr, query_ms
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export async function transact<IN extends object, OUT>(address: HumanAddr, msg: IN, fee?: Coin): Promise<OUT> {
+    if (client == null) {
+        parseError("client is null or undefined", true)
+        return
+    }
     SecretStore.dispatch({ type: 'transact' })
     let resp
     try {
@@ -59,6 +76,21 @@ export async function transact<IN extends object, OUT>(address: HumanAddr, msg: 
     return JSON.parse(new TextDecoder().decode(resp.data)) as OUT
 }
 
-export function parseError(err:any):InteractionError{
-    return "other" 
+export function parseError(err: Error | string, emit = false): InteractionError {
+
+    console.log(err)
+    let result: InteractionError = undefined
+    if (err.toString().includes('client is null or undefined'))
+        result = { type: "no client", errTitle: 'Not connected', errBody: "Make sure you connect to Keplr wallet" }
+
+    result = { type: "other", errTitle: 'Error', errBody: err.toString() }
+    if (emit) {
+        if (toast) {
+            toast.error(result.errTitle, result.errBody)
+        }
+        else {
+            console.error(result.errTitle, result.errBody)
+        }
+    }
+    return result
 }
