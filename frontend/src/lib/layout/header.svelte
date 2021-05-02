@@ -1,5 +1,5 @@
 <script lang="ts">
-  import ThemeIcon from '$lib/components/ThemeIcon.svelte'
+  import ThemeIcon from '$lib/components/themeIcon.svelte'
   import Logo from '$lib/logo/logo.svelte'
   import { SecretStore, status } from '$lib/modules/secret/secret-store'
 
