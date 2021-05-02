@@ -25,7 +25,7 @@ export const themes = {
         text: '#f1f1f1',
         background: {
           _: '#27323a',
-          contrast: '#151A20',
+          contrast: '#67727a',
         },
         gray: '#BCBCCC',
         purple: '#D2BEED',
