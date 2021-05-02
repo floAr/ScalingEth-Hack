@@ -6,6 +6,7 @@
 	import { themes } from './../themes';
 	import { toastStore } from '$lib/modules/toast/toast-store';
 	import Header from '$lib/layout/header.svelte'
+	import Footer from '$lib/layout/footer.svelte'
 
 
 	if(browser){
@@ -18,6 +19,7 @@
 	<div id="parent">
 		<Header />
 		<slot />
+		<Footer />
 	</div>
 </ThemeWrapper>
 

@@ -1,7 +1,9 @@
 <script lang="ts">
-  import ThemeIcon from '$lib/ThemeIcon.svelte'
+  import ThemeIcon from '$lib/components/ThemeIcon.svelte'
   import Logo from '$lib/logo/logo.svelte'
   import { SecretStore, status } from '$lib/modules/secret/secret-store'
+
+  import Seperator from '$lib/components/seperator.svelte'
 
   async function connect() {
     await SecretStore.setBrowserProvider('holodeck-2')
@@ -38,7 +40,7 @@
     </div>
   </div>
 </div>
-<hr class="rounded" />
+<Seperator />
 
 <style lang="scss">
   .nav-container {
@@ -124,13 +126,5 @@
   .theme-icon {
     margin-top: 30px;
     padding: 0 10px;
-  }
-
-  /* Rounded border */
-  hr.rounded {
-    border-top: 1px solid #bbb;
-    border-radius: 5px;
-    width: 90vw;
-    transform: translateY(-5px);
   }
 </style>
