@@ -1,5 +1,7 @@
 <script lang="ts">
-  import { getFile, storeFile } from '$lib/modules/ipfs/ipfs-store'
+  import { browser } from '$app/env'
+
+  // import { getFile, storeFile } from '$lib/modules/ipfs/ipfs-store'
 
   let mintInput
   let title, description, img
@@ -16,12 +18,87 @@
     }
   }
 
+  async function handleUpload(e) {
+    if (browser) {
+      let formData = new FormData()
+
+      //Adding files to the formdata
+      const axios = await import('axios')
+      // axios
+      //   .default({
+      //     // Endpoint to send files
+      //     url:
+      //       'https://prod-18.germanynorth.logic.azure.com:443/workflows/cf39482323884e73a2ff5053f06cc145/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=C1Ykrapemx4BLnzCe8MNUPdhBejMIyEFJxg4bci38y4',
+      //     method: 'POST',
+      //     headers: {
+      //       // Add any auth token here
+      //     },
+      //     // Attaching the form data
+      //     data: formData
+      //   })
+      //      
+  
+
+      console.log("img: ",img)
+      window.img=img
+      const base64 = await fetch(img);
+      console.log("base64: ",base64)
+      window.b64=base64
+         // first try using blob to get data, this errors out on larger files ------------------------------------
+      const blob = await base64.blob();
+      console.log("blob: ",blob)
+      var data = blob
+      
+      
+         // second but this is not what we want   ------------------------------------
+      // const ab = await base64.arrayBuffer();
+      // console.log("ab: ",ab)
+      // var data = ab
+
+      // old approach using xml request ------------------------------------
+      // var xhr = new XMLHttpRequest()
+      // xhr.withCredentials = true
+
+      // xhr.addEventListener('readystatechange', function () {
+      //   if (this.readyState === 4) {
+      //     console.log(this.responseText)
+      //   }
+      // })
+      // xhr.addEventListener('progress', function(p){
+      //   console.log(this.status)
+      //   console.log(p)
+      // })
+
+      // xhr.open('POST', 'https://ipfsnode.azurewebsites.net/ipfs/upload')
+      // xhr.send(data)
+         // old approach using xml request ------------------------------------
+      axios.default({
+            method: 'post',
+        url: 'https://ipfsnode.azurewebsites.net/ipfs/upload',
+        headers: {},
+        data:ab,
+        onUploadProgress:(progressEvent:ProgressEvent)=>{
+          // const totalLength = progressEvent.lengthComputable ? progressEvent.total : progressEvent.target.getResponseHeader('content-length') || progressEvent.target.getResponseHeader('x-decompressed-content-length');
+                console.log("onUploadProgress total", progressEvent.total);
+                console.log("onUploadProgress loaded", progressEvent.loaded);
+                console.log("onUploadProgress progress", Math.round( (progressEvent.loaded * 100) / progressEvent.total ));
+                // if (totalLength !== null) {
+                //     this.updateProgressBarValue(Math.round( (progressEvent.loaded * 100) / totalLength ));
+                // }
+        }
+      })
+              .then(res => {console.log(res)}) // Handle the response from backend here
+              .catch(err => {}) // Catch errors if any
+    }
+  }
+
   async function mintImage() {
-    const iCid = await storeFile(img)
-    mintObject = { title: title, description: description, mintImg: iCid }
-    console.log(mintObject)
-    testcid = iCid
-    getFile(iCid)
+    handleUpload(null)
+    // const iCid = await storeFile(img)
+    // // mintObject = { title: title, description: description, mintImg: iCid }
+    // console.log(mintObject)
+    // testcid = iCid
+    // getFile(iCid)
   }
 </script>
 
