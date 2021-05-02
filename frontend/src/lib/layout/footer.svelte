@@ -38,6 +38,7 @@
     justify-content: space-around;
     align-items: center;
     width: 75vw;
+    z-index: -50;
   }
   .footer-title {
     width: 300px;

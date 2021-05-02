@@ -49,8 +49,5 @@ import { SecretStore } from '$lib/modules/secret/secret-store';
 	/>
 </svelte:head>
 <Flow/>
-
-<Title />
-<div>{$SecretStore?.account?.address}</div>
 <style lang="scss">
 </style>

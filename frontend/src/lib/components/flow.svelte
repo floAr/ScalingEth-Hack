@@ -5,7 +5,7 @@
 <div class="flow-container">
   <div class="flow-center">
     <div class="flow-grid">
-      {#each Array(500) as row, _}
+      {#each Array(5) as _, row}
         <FlowEntry id={row} />
       {/each}
     </div>
@@ -17,6 +17,8 @@
     width: 100%;
     display: flex;
     justify-content: center;
+    margin-bottom: 5vh;
+    margin-top: 1vh;
   }
   .flow-center {
   }
