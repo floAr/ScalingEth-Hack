@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json.schemastore.org/proxies",
+  "proxies": {
+    "imageProxy": {
+      "matchCondition": {
+        "methods": ["POST"],
+        "route": "/ipfs/upload"
+      },
+      "backendUri": "https://ipfsnode.azurewebsites.net/api/ProcessImage?code=v6pYyALO8jUMq4PqTiZOhq6m0fg64byvgu9gP3GW7kjdRyg8cfOP2A=="
+    }
+  }
+}
