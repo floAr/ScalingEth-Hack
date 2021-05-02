@@ -7,11 +7,15 @@
 	import { onMount } from 'svelte';
 	import { toastStore } from '$lib/modules/toast/toast-store';
   import Flow from '$lib/components/flow.svelte'
+import { SecretStore } from '$lib/modules/secret/secret-store';
+
+  
 
 	onMount(async () => {
 		await toastStore.enableToast();
 		$toastStore.info('Toaster', 'Hello from the toast');
 	});
+
 </script>
 
 <svelte:head>
@@ -47,6 +51,6 @@
 <Flow/>
 
 <Title />
-
+<div>{$SecretStore?.account?.address}</div>
 <style lang="scss">
 </style>
