@@ -38,7 +38,6 @@
 		"axios": "^0.21.1",
 		"nft.storage": "^0.4.1",
 		"secretjs": "^0.11.0",
-		"tata-js": "^0.1.5",
-		"svelte-themer": "^0.4.6"
+		"tata-js": "^0.1.5"
 	}
 }
