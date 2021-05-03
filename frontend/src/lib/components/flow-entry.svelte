@@ -1,12 +1,20 @@
 <script lang="ts">
-  export const id:number=0
+  export let id: number = 0
+  export let name: string = ''
+  export let description: string = ''
+  export let cid: string = ''
   import Lazy from 'svelte-lazy'
   import Modal from '$lib/components/modal.svelte'
 </script>
 
 <Lazy height={250} fadeOption={{ delay: 200, duration: 600 }} placeholder={''} class="flow-lazy">
   <Modal>
-    <div class="flow-card" slot="trigger" let:setTrue>
+    <div
+      class="flow-card"
+      slot="trigger"
+      let:setTrue
+      style="--flow-cid: url('https://{cid}.ipfs.dweb.link/')"
+    >
       <div class="flow-content" on:click={setTrue} />
     </div>
 
@@ -14,12 +22,10 @@
     <div slot="header">
       <h1>Detail view {id}</h1>
     </div>
-    <div slot="content">
-     <div class="image-detail"/>
+    <div slot="content"  style="--flow-cid: url('https://{cid}.ipfs.dweb.link/')">
+      <div class="image-detail" />
     </div>
-    <div slot="footer" let:store={{setFalse}}>
-      
-    </div>
+    <div slot="footer" let:store={{ setFalse }} />
   </Modal>
 </Lazy>
 
@@ -35,15 +41,15 @@
   .flow-content {
     width: 100%;
     height: 100%;
-    background: url('https://bafybeiacvl6ff2aqn7pdhghqvd6kzeoovze4tjrkzil4m7xels2pjmht3u.ipfs.dweb.link/');
+    background: var(--flow-cid);
     background-size: cover;
     margin: 1px;
   }
 
   .image-detail {
-    width:350px;
+    width: 350px;
     height: 350px;
-    background: url('https://bafybeiacvl6ff2aqn7pdhghqvd6kzeoovze4tjrkzil4m7xels2pjmht3u.ipfs.dweb.link/');
+    background: var(--flow-cid);
     background-size: cover;
     margin: 1px;
   }
