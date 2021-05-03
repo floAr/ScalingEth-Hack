@@ -8,6 +8,9 @@ import { viewingKey } from "./viewingkey-store";
 
 export type ChainId = 'secret-2' | 'holodeck-2'
 
+export interface KeplrConfig {
+    queryAsWorking?: boolean
+}
 export interface KeplrState {
     keplrFound: boolean
     chainId: string,
@@ -15,6 +18,7 @@ export interface KeplrState {
     status?: 'undefined' | 'working' | 'idle' | 'failure'
     account?: sAccount,
     client?: SigningCosmWasmClient,
+    config: KeplrConfig
 }
 
 export interface KeplrContextProps extends KeplrState {
@@ -42,12 +46,13 @@ export type KeplrReducerActions = { type: 'init', chainId: ChainId } |
 { type: 'success' }
 
 
-export const createStore = () => {
+export const createStore = (config: KeplrConfig = {}) => {
     const { subscribe, update } = writable<KeplrState>({
         chainId: '',
         connected: false,
         status: 'undefined',
-        keplrFound: false
+        keplrFound: false,
+        config: config
     })
 
     const dispatch: (action: KeplrReducerActions) => void = (action) => {
@@ -229,7 +234,7 @@ export const createStore = () => {
     }
 }
 
-export const SecretStore = createStore()
+export const SecretStore = createStore({ queryAsWorking: false })
 
 
 
