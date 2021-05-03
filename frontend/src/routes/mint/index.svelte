@@ -1,5 +1,8 @@
 <script lang="ts">
   import { browser } from '$app/env'
+  import { selectedAccount } from '$lib/modules/secret/secret-store'
+  import { tokenContract } from '$lib/secret-manufaktur/contract-interaction'
+  import type { ImageApiResponseData } from '$lib/secret-manufaktur/image-api'
 
   // import { getFile, storeFile } from '$lib/modules/ipfs/ipfs-store'
 
@@ -18,7 +21,7 @@
     }
   }
 
-  async function handleUpload(e) {
+  async function handleUpload() {
     if (browser) {
       let formData = new FormData()
 
@@ -38,14 +41,9 @@
       //   })
       //
 
-      console.log('img: ', img)
-      window.img = img
       const base64 = await fetch(img)
-      console.log('base64: ', base64)
-      window.b64 = base64
       // first try using blob to get data, this errors out on larger files ------------------------------------
       const blob = await base64.blob()
-      console.log('blob: ', blob)
       var data = blob
 
       // second but this is not what we want   ------------------------------------
@@ -70,39 +68,45 @@
       // xhr.open('POST', 'https://ipfsnode.azurewebsites.net/ipfs/upload')
       // xhr.send(data)
       // old approach using xml request ------------------------------------
-      axios
-        .default({
-          method: 'post',
-          url: 'https://ipfsnode.azurewebsites.net/ipfs/upload',
-          headers: {},
-          data: ab,
-          onUploadProgress: (progressEvent: ProgressEvent) => {
-            // const totalLength = progressEvent.lengthComputable ? progressEvent.total : progressEvent.target.getResponseHeader('content-length') || progressEvent.target.getResponseHeader('x-decompressed-content-length');
-            console.log('onUploadProgress total', progressEvent.total)
-            console.log('onUploadProgress loaded', progressEvent.loaded)
-            console.log(
-              'onUploadProgress progress',
-              Math.round((progressEvent.loaded * 100) / progressEvent.total)
-            )
-            // if (totalLength !== null) {
-            //     this.updateProgressBarValue(Math.round( (progressEvent.loaded * 100) / totalLength ));
-            // }
-          }
-        })
-        .then(res => {
-          console.log(res)
-        }) // Handle the response from backend here
-        .catch(err => {}) // Catch errors if any
+      const response = await axios.default({
+        method: 'post',
+        url: 'https://ipfsnode.azurewebsites.net/ipfs/upload',
+        headers: {},
+        data: data,
+        onUploadProgress: (progressEvent: ProgressEvent) => {
+          // const totalLength = progressEvent.lengthComputable ? progressEvent.total : progressEvent.target.getResponseHeader('content-length') || progressEvent.target.getResponseHeader('x-decompressed-content-length');
+          console.log('onUploadProgress total', progressEvent.total)
+          console.log('onUploadProgress loaded', progressEvent.loaded)
+          console.log(
+            'onUploadProgress progress',
+            Math.round((progressEvent.loaded * 100) / progressEvent.total)
+          )
+          // if (totalLength !== null) {
+          //     this.updateProgressBarValue(Math.round( (progressEvent.loaded * 100) / totalLength ));
+          // }
+        }
+      })
+      return response.data as ImageApiResponseData
     }
   }
 
   async function mintImage() {
-    handleUpload(null)
-    // const iCid = await storeFile(img)
-    // // mintObject = { title: title, description: description, mintImg: iCid }
-    // console.log(mintObject)
-    // testcid = iCid
-    // getFile(iCid)
+    const imgResponse = await handleUpload()
+
+    const answer =  await tokenContract.SendTransaction({
+      mint_nft: {
+        owner: $selectedAccount.address,
+        public_metadata: {
+          name: title,
+          description: description,
+          image: imgResponse.thumb.value.cid
+        },
+        private_metadata:{
+          image: imgResponse.fullRes.value.cid
+        }
+      }
+    })
+    console.log(answer)
   }
 </script>
 
