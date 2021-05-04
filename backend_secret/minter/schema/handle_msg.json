@@ -1,0 +1,154 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "HandleMsg",
+  "description": "Handle messages",
+  "anyOf": [
+    {
+      "description": "mint a pack of 3 cards",
+      "type": "object",
+      "required": [
+        "mint"
+      ],
+      "properties": {
+        "mint": {
+          "type": "object",
+          "required": [
+            "names"
+          ],
+          "properties": {
+            "names": {
+              "description": "names to give the cards.  Must provide 3 names",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "description": "change address with administrative power",
+      "type": "object",
+      "required": [
+        "change_admin"
+      ],
+      "properties": {
+        "change_admin": {
+          "type": "object",
+          "required": [
+            "address"
+          ],
+          "properties": {
+            "address": {
+              "description": "address with admin authority",
+              "allOf": [
+                {
+                  "$ref": "#/definitions/HumanAddr"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "description": "change the ContractInfo of the cards",
+      "type": "object",
+      "required": [
+        "new_card_contract"
+      ],
+      "properties": {
+        "new_card_contract": {
+          "type": "object",
+          "required": [
+            "card_contract"
+          ],
+          "properties": {
+            "card_contract": {
+              "description": "new card ContractInfo",
+              "allOf": [
+                {
+                  "$ref": "#/definitions/ContractInfo"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "description": "change the address of the multi sig contract",
+      "type": "object",
+      "required": [
+        "new_multi_sig"
+      ],
+      "properties": {
+        "new_multi_sig": {
+          "type": "object",
+          "required": [
+            "address"
+          ],
+          "properties": {
+            "address": {
+              "description": "new multi sig contract address",
+              "allOf": [
+                {
+                  "$ref": "#/definitions/HumanAddr"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "description": "halt/start minting",
+      "type": "object",
+      "required": [
+        "set_mint_status"
+      ],
+      "properties": {
+        "set_mint_status": {
+          "type": "object",
+          "required": [
+            "stop"
+          ],
+          "properties": {
+            "stop": {
+              "description": "true if minting should be halted",
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "definitions": {
+    "ContractInfo": {
+      "description": "code hash and address of a contract",
+      "type": "object",
+      "required": [
+        "address",
+        "code_hash"
+      ],
+      "properties": {
+        "address": {
+          "description": "contract's address",
+          "allOf": [
+            {
+              "$ref": "#/definitions/HumanAddr"
+            }
+          ]
+        },
+        "code_hash": {
+          "description": "contract's code hash string",
+          "type": "string"
+        }
+      }
+    },
+    "HumanAddr": {
+      "type": "string"
+    }
+  }
+}
