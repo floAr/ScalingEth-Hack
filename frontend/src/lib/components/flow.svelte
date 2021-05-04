@@ -29,12 +29,9 @@
   if (browser) {
     if ($SecretStore.queryClient === null) {
       SecretStore.connect('holodeck-2').then(() => {
-        console.log('branch a')
-        console.log('xxx', $SecretStore.queryClient)
         loadTokens()
       })
     } else {
-      console.log('branch b')
       loadTokens()
     }
   }

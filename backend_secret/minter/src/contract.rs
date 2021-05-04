@@ -5,7 +5,7 @@ use cosmwasm_std::{
 };
 
 use secret_toolkit::{
-    snip721::{batch_mint_nft_msg, Metadata, Mint},
+    snip721::{batch_mint_nft_msg, mint_nft_msg, Metadata, Mint},
     utils::{pad_handle_result, pad_query_result},
 };
 
@@ -40,6 +40,10 @@ pub fn init<S: Storage, A: Api, Q: Querier>(
     let config = Config {
         minting_halt: false,
         prng_seed,
+        token_contract: StoreContractInfo {
+            code_hash: msg.token_contract.code_hash,
+            address: deps.api.canonical_address(&msg.token_contract.address)?,
+        },
     };
 
     save(&mut deps.storage, CONFIG_KEY, &config)?;
@@ -63,8 +67,16 @@ pub fn handle<S: Storage, A: Api, Q: Querier>(
 ) -> HandleResult {
     let response = match msg {
         HandleMsg::SetMintStatus { stop } => try_set_mint_status(deps, env, stop),
-        HandleMsg::Mint { names } => try_mint(deps, env, names),
+        HandleMsg::Mint {
+            title,
+            description,
+            thumbnail,
+            fullres,
+        } => try_mint(deps, env, title, description, thumbnail, fullres),
         HandleMsg::ChangeAdmin { address } => try_change_admin(deps, env, address),
+        HandleMsg::NewTokenContract { token_contract } => {
+            try_new_card_contract(deps, env, token_contract)
+        }
     };
     pad_handle_result(response, BLOCK_SIZE)
 }
@@ -81,7 +93,10 @@ pub fn handle<S: Storage, A: Api, Q: Querier>(
 pub fn try_mint<S: Storage, A: Api, Q: Querier>(
     deps: &mut Extern<S, A, Q>,
     env: Env,
-    names: Vec<String>,
+    title: String,
+    description: String,
+    thumbnail: String,
+    fullres: String,
 ) -> HandleResult {
     let mut config: Config = load(&deps.storage, CONFIG_KEY)?;
     if config.minting_halt {
@@ -89,57 +104,58 @@ pub fn try_mint<S: Storage, A: Api, Q: Querier>(
             "The minter has been stopped.  No new cards can be minted",
         ));
     }
-    if env.message.sent_funds.len() != 1
-        || env.message.sent_funds[0].amount != Uint128(1000000)
-        || env.message.sent_funds[0].denom != *"uscrt"
-    {
-        return Err(StdError::generic_err(
-            "You must pay exactly 1 SCRT to buy a pack of heroes",
-        ));
-    }
-    if names.len() < 3 {
-        return Err(StdError::generic_err(
-            "You must supply at least 3 names to mint 3 cards",
-        ));
-    }
-    let entropy = names.join("");
-    let rdm_bytes = rdm_bytes(&env, &config.prng_seed, entropy.as_ref());
-    let mut mints = Vec::new();
+    // we want minting to be free for now
+    // if env.message.sent_funds.len() != 1
+    //     || env.message.sent_funds[0].amount != Uint128(1000000)
+    //     || env.message.sent_funds[0].denom != *"uscrt"
+    // {
+    //     return Err(StdError::generic_err(
+    //         "You must pay exactly 1 SCRT to buy a pack of heroes",
+    //     ));
+    // }
+    let token_contract = config.token_contract;
 
-    for (i, name) in names.into_iter().enumerate() {
-        if i > 2 {
-            break;
-        }
-        let start_byte = i * 20;
-        mints.push(get_mints(
-            &rdm_bytes[start_byte..start_byte + 20],
-            name,
-            &env.message.sender,
-        )?);
-    }
-    config.prng_seed = rdm_bytes;
-    save(&mut deps.storage, CONFIG_KEY, &config)?;
-    let card_contract = config
-        .card_versions
-        .pop()
-        .ok_or_else(|| StdError::generic_err("Card version history is corrupt"))?;
+    let pub_meta = Metadata {
+        name: Some(title),
+        description: Some(description),
+        image: Some(thumbnail),
+    };
+
+    let priv_meta = Metadata {
+        name: None,
+        description: None,
+        image: Some(fullres),
+    };
+
+    let mint = Mint {
+        token_id: None,
+        owner: Some(env.message.sender),
+        public_metadata: Some(pub_meta),
+        private_metadata: Some(priv_meta),
+        memo: None,
+    };
     let mut messages: Vec<CosmosMsg> = Vec::new();
-    messages.push(batch_mint_nft_msg(
-        mints,
+    messages.push(mint_nft_msg(
+        mint.token_id,
+        mint.owner,
+        mint.public_metadata,
+        mint.private_metadata,
+        mint.memo,
         None,
         BLOCK_SIZE,
-        card_contract.code_hash,
-        deps.api.human_address(&card_contract.address)?,
+        token_contract.code_hash,
+        deps.api.human_address(&token_contract.address)?,
     )?);
-    let amount: Vec<Coin> = vec![Coin {
-        denom: "uscrt".to_string(),
-        amount: Uint128(1000000),
-    }];
-    messages.push(CosmosMsg::Bank(BankMsg::Send {
-        from_address: env.contract.address,
-        to_address: deps.api.human_address(&config.multi_sig)?,
-        amount,
-    }));
+    // this is also not needed without payment
+    // let amount: Vec<Coin> = vec![Coin {
+    //     denom: "uscrt".to_string(),
+    //     amount: Uint128(1000000),
+    // }];
+    // messages.push(CosmosMsg::Bank(BankMsg::Send {
+    //     from_address: env.contract.address,
+    //     to_address: deps.api.human_address(&config.multi_sig)?,
+    //     amount,
+    // }));
     Ok(HandleResponse {
         messages,
         log: vec![],
@@ -217,6 +233,47 @@ pub fn try_set_mint_status<S: Storage, A: Api, Q: Querier>(
     })
 }
 
+/// Returns HandleResult
+///
+/// change the card contract
+///
+/// # Arguments
+///
+/// * `deps` - mutable reference to Extern containing all the contract's external dependencies
+/// * `env` - Env of contract's environment
+/// * `card_contract` - new card ContractInfo
+pub fn try_new_card_contract<S: Storage, A: Api, Q: Querier>(
+    deps: &mut Extern<S, A, Q>,
+    env: Env,
+    token_contract: ContractInfo,
+) -> HandleResult {
+    let admin: CanonicalAddr = load(&deps.storage, ADMIN_KEY)?;
+    let sender_raw = deps.api.canonical_address(&env.message.sender)?;
+    if sender_raw != admin {
+        return Err(StdError::generic_err(
+            "This is an admin command. Admin commands can only be run from admin address",
+        ));
+    }
+
+    let mut config: Config = load(&deps.storage, CONFIG_KEY)?;
+    let new_address_raw = deps.api.canonical_address(&token_contract.address)?;
+
+    config.token_contract = StoreContractInfo {
+        code_hash: token_contract.code_hash,
+        address: new_address_raw,
+    };
+
+    save(&mut deps.storage, CONFIG_KEY, &config)?;
+
+    Ok(HandleResponse {
+        messages: vec![],
+        log: vec![],
+        data: Some(to_binary(&HandleAnswer::NewCardContract {
+            token_contract: token_contract.address,
+        })?),
+    })
+}
+
 /////////////////////////////////////// Query /////////////////////////////////////
 /// Returns QueryResult
 ///
@@ -239,64 +296,6 @@ pub fn query<S: Storage, A: Api, Q: Querier>(deps: &Extern<S, A, Q>, msg: QueryM
 pub fn query_config<S: Storage, A: Api, Q: Querier>(deps: &Extern<S, A, Q>) -> QueryResult {
     let config: Config = load(&deps.storage, CONFIG_KEY)?;
     to_binary(&QueryAnswer::Config {
-        card_versions: config
-            .card_versions
-            .iter()
-            .map(|v| v.to_humanized(&deps.api))
-            .collect::<StdResult<Vec<ContractInfo>>>()?,
-        multi_sig_contract: deps.api.human_address(&config.multi_sig)?,
         minting_has_halted: config.minting_halt,
     })
-}
-
-fn get_mints(bytes: &[u8], name: String, owner: &HumanAddr) -> StdResult<Mint> {
-    let pub_meta = Metadata {
-        name: Some(name.clone()),
-        description: None,
-        image: None,
-    };
-    let num_rolls = 5usize;
-    let mut skills: Vec<u8> = Vec::new();
-    for i in 0..4 {
-        let val = bytes
-            .iter()
-            .skip(i * num_rolls)
-            .take(num_rolls)
-            .map(|b| (b % 100) + 1)
-            .min()
-            .unwrap_or(1);
-        skills.push(val);
-    }
-    let stats = Stats {
-        base: skills.clone(),
-        current: skills,
-    };
-    let stats_str = serde_json::to_string(&stats)
-        .map_err(|e| StdError::generic_err(format!("Error serializing card stats: {}", e)))?;
-    let priv_meta = Metadata {
-        name: Some(name),
-        description: None,
-        image: Some(stats_str),
-    };
-    let mint = Mint {
-        token_id: None,
-        owner: Some(owner.clone()),
-        public_metadata: Some(pub_meta),
-        private_metadata: Some(priv_meta),
-        memo: None,
-    };
-    Ok(mint)
-}
-
-fn rdm_bytes(env: &Env, seed: &[u8], entropy: &[u8]) -> Vec<u8> {
-    // 16 here represents the lengths in bytes of the block height and time.
-    let entropy_len = 16 + env.message.sender.len() + entropy.len();
-    let mut rng_entropy = Vec::with_capacity(entropy_len);
-    rng_entropy.extend_from_slice(&env.block.height.to_be_bytes());
-    rng_entropy.extend_from_slice(&env.block.time.to_be_bytes());
-    rng_entropy.extend_from_slice(&env.message.sender.0.as_bytes());
-    rng_entropy.extend_from_slice(entropy);
-
-    let mut rng = Prng::new(seed, &rng_entropy);
-    rng.rand_bytes().to_vec()
 }

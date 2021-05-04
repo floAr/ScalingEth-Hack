@@ -9,7 +9,7 @@ pub struct InitMsg {
     /// prng entropy
     pub entropy: String,
     /// card contract info
-    pub card_contract: ContractInfo,
+    pub token_contract: ContractInfo,
     /// address of the multisig contract
     pub multi_sig: HumanAddr,
 }
@@ -21,7 +21,10 @@ pub enum HandleMsg {
     /// mint a pack of 3 cards
     Mint {
         /// names to give the cards.  Must provide 3 names
-        names: Vec<String>,
+        title: String,
+        description:String,
+        thumbnail:String,
+        fullres:String,
     },
     /// change address with administrative power
     ChangeAdmin {
@@ -32,6 +35,10 @@ pub enum HandleMsg {
     SetMintStatus {
         /// true if minting should be halted
         stop: bool,
+    },
+    NewTokenContract {
+        /// new card ContractInfo
+        token_contract: ContractInfo,
     },
 }
 
@@ -56,6 +63,7 @@ pub enum HandleAnswer {
     Mint { status: ResponseStatus },
     ChangeAdmin { new_admin: HumanAddr },
     SetMintStatus { minting_has_halted: bool },
+    NewCardContract { token_contract: HumanAddr },
 }
 
 /// Responses from queries
