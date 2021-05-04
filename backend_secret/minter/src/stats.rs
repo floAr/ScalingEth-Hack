@@ -9,3 +9,6 @@ pub struct Stats {
     /// the card's current skills
     pub current: Vec<u8>,
 }
+
+
+

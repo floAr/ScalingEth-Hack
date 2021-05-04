@@ -18,6 +18,8 @@ pub struct Config {
     pub minting_halt: bool,
     /// prng seed
     pub prng_seed: Vec<u8>,
+    // token contract data
+    pub token_contract: StoreContractInfo
 }
 
 /// code hash and address of a contract
