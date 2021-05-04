@@ -1,5 +1,5 @@
 import { browser } from "$app/env";
-import type { SigningCosmWasmClient } from "secretjs";
+import type { CosmWasmClient, SigningCosmWasmClient } from "secretjs";
 import type { Coin } from "secretjs/types/types";
 import type { toast_module } from "../toast/toast";
 import { toastStore } from "../toast/toast-store";
@@ -7,10 +7,12 @@ import { SecretStore } from "./secret-store";
 
 
 let client: SigningCosmWasmClient = undefined
+let queryClient: CosmWasmClient = undefined
 let workingOnQuery = false;
 if (browser) {
     SecretStore.subscribe(value => {
         client = value.client
+        queryClient= value.queryClient
         workingOnQuery = value.config.queryAsWorking ?? false;
     })
 }
@@ -34,14 +36,16 @@ export interface InteractionError {
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export async function query<IN extends object, OUT>(address: HumanAddr, query_msg: IN): Promise<OUT> {
-    if (client == null) {
+    const _client = client ?? queryClient
+    console.log(_client,client,queryClient)
+    if (_client == null) {
         parseError("client is null or undefined", true)
         return
     }
     if (workingOnQuery)
         SecretStore.dispatch({ type: 'transact' })
     try {
-        const resp = await client.queryContractSmart(address, query_msg)
+        const resp = await _client.queryContractSmart(address, query_msg)
         if (workingOnQuery)
             SecretStore.dispatch({ type: 'success' })
         return resp
@@ -49,7 +53,7 @@ export async function query<IN extends object, OUT>(address: HumanAddr, query_ms
     catch (err) {
         const errType = parseError(err, true)
     }
-    const resp = await client.queryContractSmart(address, query_msg)
+    const resp = await _client.queryContractSmart(address, query_msg)
     return resp
 }
 

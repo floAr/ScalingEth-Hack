@@ -1,5 +1,5 @@
 import { browser } from "$app/env";
-import type { SigningCosmWasmClient, Account as sAccount } from "secretjs";
+import type { SigningCosmWasmClient, Account as sAccount, CosmWasmClient } from "secretjs";
 import { onMount } from "svelte";
 import { derived, writable } from "svelte/store";
 import type { toast_module } from "../toast/toast";
@@ -18,6 +18,7 @@ export interface KeplrState {
     status?: 'undefined' | 'working' | 'idle' | 'failure'
     account?: sAccount,
     client?: SigningCosmWasmClient,
+    queryClient: CosmWasmClient,
     config: KeplrConfig
 }
 
@@ -52,7 +53,8 @@ export const createStore = (config: KeplrConfig = {}) => {
         connected: false,
         status: 'undefined',
         keplrFound: false,
-        config: config
+        config: config,
+        queryClient: null
     })
 
     const dispatch: (action: KeplrReducerActions) => void = (action) => {
@@ -124,6 +126,17 @@ export const createStore = (config: KeplrConfig = {}) => {
 
     const createPadding = (currentLength: number, targetLength: number) => {
         return randomString(targetLength - currentLength)
+    }
+
+    const connect = async (chainId: ChainId) => {
+        const { CosmWasmClient } = await import('secretjs')
+        update(state => {
+            return {
+                ...state,
+                queryClient: new CosmWasmClient(chainId === 'holodeck-2' ? 'https://datahubnode.azurewebsites.net/testnet/' : 'https://datahubnode.azurewebsites.net/node')
+
+            }
+        })
     }
 
     const setBrowserProvider = async (chainId: ChainId) => {
@@ -227,6 +240,7 @@ export const createStore = (config: KeplrConfig = {}) => {
     }
     return {
         subscribe,
+        connect,
         setBrowserProvider,
         createPadding,
         getEntropy,

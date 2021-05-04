@@ -2,6 +2,7 @@
   import { browser } from '$app/env'
 
   import FlowEntry from '$lib/components/flow-entry.svelte'
+  import { SecretStore, chainId } from '$lib/modules/secret/secret-store'
   import { tokenContract } from '$lib/secret-manufaktur/contract-interaction'
 
   let public_tokens: {
@@ -19,14 +20,25 @@
     for (const element of tokens.token_list.tokens) {
       token = await tokenContract.SendQuery({ nft_info: { token_id: element } })
       console.log(token)
-      public_tokens = [...public_tokens, token.nft_info]
+      public_tokens = [token.nft_info, ...public_tokens]
     }
     console.log(public_tokens)
     token_count++
   }
+
   if (browser) {
-    loadTokens()
+    if ($SecretStore.queryClient === null) {
+      SecretStore.connect('holodeck-2').then(() => {
+        console.log('branch a')
+        console.log('xxx', $SecretStore.queryClient)
+        loadTokens()
+      })
+    } else {
+      console.log('branch b')
+      loadTokens()
+    }
   }
+  $: console.log('chainId', $chainId)
 </script>
 
 <div class="flow-container">
