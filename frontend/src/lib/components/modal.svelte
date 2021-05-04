@@ -79,6 +79,9 @@
 {/if}
 
 <style>
+  :global(body) {
+    overflow-y: visible !important;
+  }
   div.modal {
     position: fixed;
     top: 0;
