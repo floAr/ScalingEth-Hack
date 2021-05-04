@@ -19,11 +19,12 @@
     </div>
 
     <!-- Modal / detail view -->
-    <div slot="header">
-      <h1>Detail view {id}</h1>
-    </div>
-    <div slot="content"  style="--flow-cid: url('https://{cid}.ipfs.dweb.link/')">
-      <div class="image-detail" />
+    <div slot="content" style="--flow-cid: url('https://{cid}.ipfs.dweb.link/'); overflow: visible; position: relative;">
+      <div class="image-detail">
+        <div class="side-content">
+          <h1>Detail view {id}</h1>
+        </div>
+      </div>
     </div>
     <div slot="footer" let:store={{ setFalse }} />
   </Modal>
@@ -52,5 +53,10 @@
     background: var(--flow-cid);
     background-size: cover;
     margin: 1px;
+  }
+
+  .side-content {
+    right: -50px;
+    position: absolute;
   }
 </style>

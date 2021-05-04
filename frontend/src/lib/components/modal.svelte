@@ -56,13 +56,6 @@
     <div class="backdrop" on:click={setFalse} />
 
     <div class="content-wrapper">
-      <slot name="header" {store}>
-        <!-- fallback -->
-        <div>
-          <h1>Your Modal Heading Goes Here...</h1>
-        </div>
-      </slot>
-
       <div class="content">
         <slot name="content" {store} />
       </div>
@@ -109,7 +102,6 @@
     max-width: 70vw;
     border-radius: 0.3rem;
     background-color: var(--theme-colors-background, initial);
-    overflow: hidden;
   }
   @media (max-width: 767px) {
     div.content-wrapper {
@@ -118,7 +110,8 @@
   }
   div.content {
     max-height: 50vh;
-    overflow: auto;
+    max-width: 80vw;
+    overflow: visible;
   }
   h1 {
     opacity: 0.5;
