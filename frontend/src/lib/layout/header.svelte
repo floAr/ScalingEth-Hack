@@ -50,7 +50,6 @@
     font-family: 'Cinzel Decorative', cursive;
     font-weight: 700;
     font-size: large;
-    width: 100vw;
     color: var(--theme-colors-text);
     margin: 10px 0;
   }
