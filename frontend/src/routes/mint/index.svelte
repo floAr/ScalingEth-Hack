@@ -1,5 +1,8 @@
 <script lang="ts">
   import { browser } from '$app/env'
+  import { selectedAccount } from '$lib/modules/secret/secret-store'
+  import { tokenContract } from '$lib/secret-manufaktur/contract-interaction'
+  import type { ImageApiResponseData } from '$lib/secret-manufaktur/image-api'
 
   // import { getFile, storeFile } from '$lib/modules/ipfs/ipfs-store'
 
@@ -18,7 +21,7 @@
     }
   }
 
-  async function handleUpload(e) {
+  async function handleUpload() {
     if (browser) {
       let formData = new FormData()
 
@@ -36,21 +39,14 @@
       //     // Attaching the form data
       //     data: formData
       //   })
-      //      
-  
+      //
 
-      console.log("img: ",img)
-      window.img=img
-      const base64 = await fetch(img);
-      console.log("base64: ",base64)
-      window.b64=base64
-         // first try using blob to get data, this errors out on larger files ------------------------------------
-      const blob = await base64.blob();
-      console.log("blob: ",blob)
+      const base64 = await fetch(img)
+      // first try using blob to get data, this errors out on larger files ------------------------------------
+      const blob = await base64.blob()
       var data = blob
-      
-      
-         // second but this is not what we want   ------------------------------------
+
+      // second but this is not what we want   ------------------------------------
       // const ab = await base64.arrayBuffer();
       // console.log("ab: ",ab)
       // var data = ab
@@ -71,34 +67,46 @@
 
       // xhr.open('POST', 'https://ipfsnode.azurewebsites.net/ipfs/upload')
       // xhr.send(data)
-         // old approach using xml request ------------------------------------
-      axios.default({
-            method: 'post',
+      // old approach using xml request ------------------------------------
+      const response = await axios.default({
+        method: 'post',
         url: 'https://ipfsnode.azurewebsites.net/ipfs/upload',
         headers: {},
-        data:ab,
-        onUploadProgress:(progressEvent:ProgressEvent)=>{
+        data: data,
+        onUploadProgress: (progressEvent: ProgressEvent) => {
           // const totalLength = progressEvent.lengthComputable ? progressEvent.total : progressEvent.target.getResponseHeader('content-length') || progressEvent.target.getResponseHeader('x-decompressed-content-length');
-                console.log("onUploadProgress total", progressEvent.total);
-                console.log("onUploadProgress loaded", progressEvent.loaded);
-                console.log("onUploadProgress progress", Math.round( (progressEvent.loaded * 100) / progressEvent.total ));
-                // if (totalLength !== null) {
-                //     this.updateProgressBarValue(Math.round( (progressEvent.loaded * 100) / totalLength ));
-                // }
+          console.log('onUploadProgress total', progressEvent.total)
+          console.log('onUploadProgress loaded', progressEvent.loaded)
+          console.log(
+            'onUploadProgress progress',
+            Math.round((progressEvent.loaded * 100) / progressEvent.total)
+          )
+          // if (totalLength !== null) {
+          //     this.updateProgressBarValue(Math.round( (progressEvent.loaded * 100) / totalLength ));
+          // }
         }
       })
-              .then(res => {console.log(res)}) // Handle the response from backend here
-              .catch(err => {}) // Catch errors if any
+      return response.data as ImageApiResponseData
     }
   }
 
   async function mintImage() {
-    handleUpload(null)
-    // const iCid = await storeFile(img)
-    // // mintObject = { title: title, description: description, mintImg: iCid }
-    // console.log(mintObject)
-    // testcid = iCid
-    // getFile(iCid)
+    const imgResponse = await handleUpload()
+
+    const answer =  await tokenContract.SendTransaction({
+      mint_nft: {
+        owner: $selectedAccount.address,
+        public_metadata: {
+          name: title,
+          description: description,
+          image: imgResponse.thumb.value.cid
+        },
+        private_metadata:{
+          image: imgResponse.fullRes.value.cid
+        }
+      }
+    })
+    console.log(answer)
   }
 </script>
 
@@ -108,30 +116,36 @@
 
 <div>
   <div class="mint-container">
-    <span class="mint-header">mint <span class="underlined-text">{title || 'img'}</span></span>
+    <span class="mint-header">
+      mint {title || 'artwork'}
+    </span>
 
     <div class="mint-input-container">
-      <div class="mint-input-wrapper">
+      <div class="mint-img-container">
+        {#if img}
+          <div class="mint-img preview-img"><img src={img} alt="d" /></div>
+        {/if}
+        {#if !img}
+          <div class="img-selector-container">
+            <span
+              class="img-selector-button"
+              on:click={() => {
+                mintInput.click()
+              }}
+            >
+              Choose Image
+            </span>
+          </div>
+        {/if}
+        <div class="img-selector-background" />
+      </div>
+      <div class="mint-input-wrapper title-input">
         <input bind:value={title} placeholder="enter the title" />
       </div>
-      <div class="mint-input-wrapper">
-        <input bind:value={description} placeholder="enter the description" />
-      </div>
-      <div class="mint-img-container">
-        <span
-          class="img-selector"
-          on:click={() => {
-            mintInput.click()
-          }}
-        >
-          Choose Image
-        </span>
-        {#if img}
-          <div class="preview-img"><img src={img} alt="d" /></div>
-        {/if}
+      <div class="mint-input-wrapper description-input">
+        <textarea bind:value={description} rows="3" placeholder="enter the description" />
       </div>
     </div>
-
     <button
       class="hae-button"
       on:click={() => {
@@ -157,7 +171,13 @@
   *:focus {
     outline: none;
   }
-
+  .mint-header {
+    width: 100%;
+    font-family: 'Cinzel Decorative', cursive;
+    text-align: center;
+    font-weight: bold;
+    margin: 6px 0;
+  }
   .mint-container {
     display: flex;
     flex-direction: column;
@@ -165,22 +185,98 @@
     justify-content: center;
     min-width: 80vw;
   }
-
   .mint-container span {
     width: max-content;
   }
 
-  .mint-img-container {
+  .mint-input-container {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    align-items: center;
+  }
+  .mint-img-container {
+    margin: 6px 0;
+    position: relative;
+    width: 50vw;
+    height: 40vh;
+    min-width: 500px;
+    max-width: 1000px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    &::before {
+      content: '';
+      position: absolute;
+      top: 5%;
+      left: 0;
+      width: 100%;
+      height: 90%;
+      z-index: 10;
+      border-top: 2px solid var(--theme-colors-text);
+      border-bottom: 2px solid var(--theme-colors-text);
+      border-radius: 2px;
+      transform: scaleX(0);
+
+      transition: all 0.4s ease-in-out;
+    }
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 5%;
+      width: 90%;
+      height: 100%;
+      z-index: 10;
+      border-left: 2px solid var(--theme-colors-text);
+      border-right: 2px solid var(--theme-colors-text);
+      border-radius: 2px;
+      transform: scaleY(0);
+
+      transition: all 0.4s ease-in-out;
+    }
+    &:hover::before {
+      transform: scaleX(1);
+    }
+    &:hover::after {
+      transform: scaleY(1);
+    }
+  }
+  .mint-img {
+    z-index: 2;
+  }
+  .img-selector-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  .img-selector {
+  .img-selector-background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background: var(--theme-colors-background-contrast);
+    opacity: 0.4;
+  }
+  .img-selector-button {
+    font-family: 'Cinzel Decorative';
+    z-index: 20;
     cursor: pointer;
   }
-
   .hae-button {
+    font-family: 'Cinzel Decorative';
     width: fit-content;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: larger;
+    font-weight: bold;
+    color: var(--theme-colors-text);
+    margin: 20px;
   }
 
   button:disabled {
@@ -188,84 +284,63 @@
     background-color: #cccccc;
     color: #666666;
   }
-
-  .underlined-text {
-    position: relative;
-    z-index: 10;
-  }
-
-  .underlined-text::after {
-    position: absolute;
-    bottom: 2px;
-    left: 0;
-    z-index: 4;
-
-    width: 100%;
-    height: 5%;
-    min-height: 3px;
-    content: '';
-    background: linear-gradient(to right, #ffd89b, #19547b);
-    /* background: linear-gradient(to right, #1565c0, #b92b27); */
-  }
-
   .mint-input-wrapper {
-    margin: 10px;
-    width: 50vw;
+    margin: 6px 0;
+    width: 45vw;
     min-width: 100px;
+    overflow: hidden;
     position: relative;
   }
-
   .mint-input-wrapper input {
     width: 100%;
+    padding: 4px;
+    border: hidden;
+    background: var(--theme-colors-background-contrast);
+    color: var(--theme-colors-text);
   }
 
+  .mint-input-wrapper textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 4px;
+    border: hidden;
+    background: var(--theme-colors-background-contrast);
+    color: var(--theme-colors-text);
+    vertical-align: top;
+  }
+
+  .mint-input-wrapper textarea::placeholder,
+  input::placeholder {
+    color: var(--theme-colors-text);
+    opacity: 0.8;
+  }
   .mint-input-wrapper::after {
-    content: '';
     position: absolute;
-    width: 100%;
-    height: 5%;
-    max-height: 6px;
-    min-height: 3px;
     bottom: 0;
-    left: 0;
-    background: linear-gradient(to right, #ffd89b, #19547b);
-    z-index: 5;
+    left: -100%;
+    content: '';
+    height: 2px;
+    width: 100%;
+    border-radius: 5px;
+    background-color: var(--theme-colors-text);
     transition: all 0.4s ease-in-out;
-    transform: scale(0);
   }
-
   .mint-input-wrapper:hover::after {
-    transform: scale(1);
-  }
-
-  .mint-input-wrapper:focus-within::after {
-    transform: scale(1);
-  }
-
-  .preview-img {
-    position: relative;
-    width: fit-content;
-  }
-
-  .preview-img img {
-    max-height: 20vh;
-  }
-
-  .preview-img::after {
-    position: absolute;
-    bottom: 0;
     left: 0;
-    z-index: 4;
-
-    width: 100%;
-    height: 5%;
-    max-height: 6px;
-    min-height: 3px;
-    content: '';
-    background: linear-gradient(to right, #ffd89b, #19547b);
   }
-
-  img {
-    max-width: none;
+  .mint-input-wrapper:focus-within::after {
+    left: 0;
+  }
+  .preview-img {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+  }
+  .preview-img img {
+    max-height: 96%;
+    max-width: 96%;
   }
 </style>

@@ -22,7 +22,7 @@ export const themes = {
     },
     dark: {
       colors: {
-        text: '#f1f1f1',
+        text: '#c1c1c1',
         background: {
           _: '#27323a',
           contrast: '#67727a',

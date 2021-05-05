@@ -7,6 +7,7 @@
 	import { toastStore } from '$lib/modules/toast/toast-store';
 	import Header from '$lib/layout/header.svelte'
 	import Footer from '$lib/layout/footer.svelte'
+import TokenProvider from '$lib/secret-manufaktur/token-provider.svelte';
 
 
 	if(browser){
@@ -16,6 +17,7 @@
 </script>
 
 <ThemeWrapper themes={themes} >
+	<TokenProvider />
 	<div id="parent">
 		<Header />
 		<slot />

@@ -1,5 +1,5 @@
 import { browser } from "$app/env";
-import type { SigningCosmWasmClient, Account as sAccount } from "secretjs";
+import type { SigningCosmWasmClient, Account as sAccount, CosmWasmClient } from "secretjs";
 import { onMount } from "svelte";
 import { derived, writable } from "svelte/store";
 import type { toast_module } from "../toast/toast";
@@ -8,6 +8,9 @@ import { viewingKey } from "./viewingkey-store";
 
 export type ChainId = 'secret-2' | 'holodeck-2'
 
+export interface KeplrConfig {
+    queryAsWorking?: boolean
+}
 export interface KeplrState {
     keplrFound: boolean
     chainId: string,
@@ -15,6 +18,8 @@ export interface KeplrState {
     status?: 'undefined' | 'working' | 'idle' | 'failure'
     account?: sAccount,
     client?: SigningCosmWasmClient,
+    queryClient: CosmWasmClient,
+    config: KeplrConfig
 }
 
 export interface KeplrContextProps extends KeplrState {
@@ -42,12 +47,14 @@ export type KeplrReducerActions = { type: 'init', chainId: ChainId } |
 { type: 'success' }
 
 
-export const createStore = () => {
+export const createStore = (config: KeplrConfig = {}) => {
     const { subscribe, update } = writable<KeplrState>({
         chainId: '',
         connected: false,
         status: 'undefined',
-        keplrFound: false
+        keplrFound: false,
+        config: config,
+        queryClient: null
     })
 
     const dispatch: (action: KeplrReducerActions) => void = (action) => {
@@ -119,6 +126,17 @@ export const createStore = () => {
 
     const createPadding = (currentLength: number, targetLength: number) => {
         return randomString(targetLength - currentLength)
+    }
+
+    const connect = async (chainId: ChainId) => {
+        const { CosmWasmClient } = await import('secretjs')
+        update(state => {
+            return {
+                ...state,
+                queryClient: new CosmWasmClient(chainId === 'holodeck-2' ? 'https://datahubnode.azurewebsites.net/testnet/' : 'https://datahubnode.azurewebsites.net/node')
+
+            }
+        })
     }
 
     const setBrowserProvider = async (chainId: ChainId) => {
@@ -222,6 +240,7 @@ export const createStore = () => {
     }
     return {
         subscribe,
+        connect,
         setBrowserProvider,
         createPadding,
         getEntropy,
@@ -229,7 +248,7 @@ export const createStore = () => {
     }
 }
 
-export const SecretStore = createStore()
+export const SecretStore = createStore({ queryAsWorking: false })
 
 
 

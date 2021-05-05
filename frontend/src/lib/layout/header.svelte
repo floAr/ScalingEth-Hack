@@ -1,5 +1,5 @@
 <script lang="ts">
-  import ThemeIcon from '$lib/components/ThemeIcon.svelte'
+  import ThemeIcon from '$lib/components/themeIcon.svelte'
   import Logo from '$lib/logo/logo.svelte'
   import { SecretStore, status } from '$lib/modules/secret/secret-store'
 
@@ -14,7 +14,7 @@
   <div class="nav-container">
     <div class="header-container left">
       <div class="header-link">
-        <a href=".">Feed</a>
+        <a href=".">Schaufenster</a>
       </div>
     </div>
     <div
@@ -50,7 +50,6 @@
     font-family: 'Cinzel Decorative', cursive;
     font-weight: 700;
     font-size: large;
-    width: 100vw;
     color: var(--theme-colors-text);
     margin: 10px 0;
   }
