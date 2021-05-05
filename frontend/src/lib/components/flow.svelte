@@ -4,44 +4,13 @@
   import FlowEntry from '$lib/components/flow-entry.svelte'
   import { SecretStore, chainId } from '$lib/modules/secret/secret-store'
   import { tokenContract } from '$lib/secret-manufaktur/contract-interaction'
-
-  let public_tokens: {
-    description?: string | null
-    image?: string | null
-    name?: string | null
-  }[] = []
-
-  let token_count = 0
-
-  async function loadTokens() {
-    const tokens = await tokenContract.SendQuery({ all_tokens: {} })
-    let token
-
-    for (const element of tokens.token_list.tokens) {
-      token = await tokenContract.SendQuery({ nft_info: { token_id: element } })
-      console.log(token)
-      public_tokens = [token.nft_info, ...public_tokens]
-    }
-    console.log(public_tokens)
-    token_count++
-  }
-
-  if (browser) {
-    if ($SecretStore.queryClient === null) {
-      SecretStore.connect('holodeck-2').then(() => {
-        loadTokens()
-      })
-    } else {
-      loadTokens()
-    }
-  }
-  $: console.log('chainId', $chainId)
+  import { tokenStore } from '$lib/secret-manufaktur/token-store'
 </script>
 
 <div class="flow-container">
   <div class="flow-center">
     <div class="flow-grid">
-      {#each public_tokens as { name, description, image }, i}
+      {#each $tokenStore as { name, description, image }, i}
         <FlowEntry id={i} {name} {description} cid={image} />
       {/each}
     </div>
