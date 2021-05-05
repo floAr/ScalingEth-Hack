@@ -4,28 +4,19 @@
   "description": "Instantiation message",
   "type": "object",
   "required": [
-    "card_contract",
     "entropy",
-    "multi_sig"
+    "token_contract"
   ],
   "properties": {
-    "card_contract": {
-      "description": "card contract info",
-      "allOf": [
-        {
-          "$ref": "#/definitions/ContractInfo"
-        }
-      ]
-    },
     "entropy": {
       "description": "prng entropy",
       "type": "string"
     },
-    "multi_sig": {
-      "description": "address of the multisig contract",
+    "token_contract": {
+      "description": "card contract info",
       "allOf": [
         {
-          "$ref": "#/definitions/HumanAddr"
+          "$ref": "#/definitions/ContractInfo"
         }
       ]
     }

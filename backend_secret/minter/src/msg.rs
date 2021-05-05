@@ -10,8 +10,6 @@ pub struct InitMsg {
     pub entropy: String,
     /// card contract info
     pub token_contract: ContractInfo,
-    /// address of the multisig contract
-    pub multi_sig: HumanAddr,
 }
 
 /// Handle messages
