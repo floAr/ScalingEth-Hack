@@ -44,44 +44,6 @@
     {
       "type": "object",
       "required": [
-        "new_card_contract"
-      ],
-      "properties": {
-        "new_card_contract": {
-          "type": "object",
-          "required": [
-            "card_contract"
-          ],
-          "properties": {
-            "card_contract": {
-              "$ref": "#/definitions/HumanAddr"
-            }
-          }
-        }
-      }
-    },
-    {
-      "type": "object",
-      "required": [
-        "new_multi_sig"
-      ],
-      "properties": {
-        "new_multi_sig": {
-          "type": "object",
-          "required": [
-            "multi_sig"
-          ],
-          "properties": {
-            "multi_sig": {
-              "$ref": "#/definitions/HumanAddr"
-            }
-          }
-        }
-      }
-    },
-    {
-      "type": "object",
-      "required": [
         "set_mint_status"
       ],
       "properties": {
@@ -93,6 +55,25 @@
           "properties": {
             "minting_has_halted": {
               "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "new_card_contract"
+      ],
+      "properties": {
+        "new_card_contract": {
+          "type": "object",
+          "required": [
+            "token_contract"
+          ],
+          "properties": {
+            "token_contract": {
+              "$ref": "#/definitions/HumanAddr"
             }
           }
         }

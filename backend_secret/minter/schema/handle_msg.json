@@ -13,15 +13,24 @@
         "mint": {
           "type": "object",
           "required": [
-            "names"
+            "description",
+            "fullres",
+            "thumbnail",
+            "title"
           ],
           "properties": {
-            "names": {
+            "description": {
+              "type": "string"
+            },
+            "fullres": {
+              "type": "string"
+            },
+            "thumbnail": {
+              "type": "string"
+            },
+            "title": {
               "description": "names to give the cards.  Must provide 3 names",
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
+              "type": "string"
             }
           }
         }
@@ -53,56 +62,6 @@
       }
     },
     {
-      "description": "change the ContractInfo of the cards",
-      "type": "object",
-      "required": [
-        "new_card_contract"
-      ],
-      "properties": {
-        "new_card_contract": {
-          "type": "object",
-          "required": [
-            "card_contract"
-          ],
-          "properties": {
-            "card_contract": {
-              "description": "new card ContractInfo",
-              "allOf": [
-                {
-                  "$ref": "#/definitions/ContractInfo"
-                }
-              ]
-            }
-          }
-        }
-      }
-    },
-    {
-      "description": "change the address of the multi sig contract",
-      "type": "object",
-      "required": [
-        "new_multi_sig"
-      ],
-      "properties": {
-        "new_multi_sig": {
-          "type": "object",
-          "required": [
-            "address"
-          ],
-          "properties": {
-            "address": {
-              "description": "new multi sig contract address",
-              "allOf": [
-                {
-                  "$ref": "#/definitions/HumanAddr"
-                }
-              ]
-            }
-          }
-        }
-      }
-    },
-    {
       "description": "halt/start minting",
       "type": "object",
       "required": [
@@ -118,6 +77,30 @@
             "stop": {
               "description": "true if minting should be halted",
               "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "new_token_contract"
+      ],
+      "properties": {
+        "new_token_contract": {
+          "type": "object",
+          "required": [
+            "token_contract"
+          ],
+          "properties": {
+            "token_contract": {
+              "description": "new card ContractInfo",
+              "allOf": [
+                {
+                  "$ref": "#/definitions/ContractInfo"
+                }
+              ]
             }
           }
         }
