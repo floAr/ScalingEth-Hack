@@ -1,9 +1,5 @@
 <script lang="ts">
-  import { browser } from '$app/env'
-
   import FlowEntry from '$lib/components/flow-entry.svelte'
-  import { SecretStore, chainId } from '$lib/modules/secret/secret-store'
-  import { tokenContract } from '$lib/secret-manufaktur/contract-interaction'
   import { tokenStore } from '$lib/secret-manufaktur/token-store'
 </script>
 

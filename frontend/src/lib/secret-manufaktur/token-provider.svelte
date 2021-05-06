@@ -9,12 +9,12 @@
     const tokens = await tokenContract.SendQuery({ all_tokens: {} })
     let token
 
-    for (const element of tokens.token_list.tokens) {
+    for (const element of tokens.token_list.tokens.reverse()) {
       if ($tokenStore.find(t => t.id === element) === undefined) {
         token = await tokenContract.SendQuery({ nft_info: { token_id: element } })
 
         tokenStore.update(tokens => {
-          return [{ ...token.nft_info, id: element }, ...tokens]
+          return [ ...tokens,{ ...token.nft_info, id: element }]
         })
       }
     }
