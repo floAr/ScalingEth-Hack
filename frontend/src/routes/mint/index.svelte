@@ -1,7 +1,7 @@
 <script lang="ts">
   import { browser } from '$app/env'
   import { selectedAccount } from '$lib/modules/secret/secret-store'
-  import { tokenContract } from '$lib/secret-manufaktur/contract-interaction'
+  import { mintContract, tokenContract } from '$lib/secret-manufaktur/contract-interaction'
   import type { ImageApiResponseData } from '$lib/secret-manufaktur/image-api'
 
   // import { getFile, storeFile } from '$lib/modules/ipfs/ipfs-store'
@@ -93,19 +93,27 @@
   async function mintImage() {
     const imgResponse = await handleUpload()
 
-    const answer =  await tokenContract.SendTransaction({
-      mint_nft: {
-        owner: $selectedAccount.address,
-        public_metadata: {
-          name: title,
-          description: description,
-          image: imgResponse.thumb.value.cid
-        },
-        private_metadata:{
-          image: imgResponse.fullRes.value.cid
-        }
+    const answer = await mintContract.SendTransaction({
+      mint: {
+        title,
+        description,
+        thumbnail: imgResponse.thumb.value.cid,
+        fullres: imgResponse.fullRes.value.cid
       }
     })
+    // const answer =  await tokenContract.SendTransaction({
+    //   mint_nft: {
+    //     owner: $selectedAccount.address,
+    //     public_metadata: {
+    //       name: title,
+    //       description: description,
+    //       image: imgResponse.thumb.value.cid
+    //     },
+    //     private_metadata:{
+    //       image: imgResponse.fullRes.value.cid
+    //     }
+    //   }
+    // })
     console.log(answer)
   }
 </script>
