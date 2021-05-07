@@ -1,7 +1,7 @@
 <script lang="ts">
   import { browser } from '$app/env'
   import { SecretStore, selectedAccount } from '$lib/modules/secret/secret-store'
-  import { ViewingKeyStore } from '$lib/modules/secret/viewingkey-store'
+  import { version, ViewingKeyStore } from '$lib/modules/secret/viewingkey-store'
   import { tokenContract } from './contract-interaction'
 
   import { AllTokensStore, MyTokensStore } from './token-store'
@@ -51,4 +51,4 @@
   }
 </script>
 
-<div />
+<div id={$version}/>

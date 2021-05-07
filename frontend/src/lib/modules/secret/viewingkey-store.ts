@@ -46,3 +46,5 @@ export const createStore = () => {
 }
 
 export const ViewingKeyStore = createStore();
+
+export const version = persist<string>(writable('1'),localStorage(),'version')
