@@ -9,7 +9,8 @@
   import { fly } from 'svelte/transition'
 
   function numberWithCommas(x) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+
+    return x?x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'):'Not for sale'
   }
 </script>
 
