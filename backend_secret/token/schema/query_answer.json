@@ -285,6 +285,16 @@
                 "string",
                 "null"
               ]
+            },
+            "price": {
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/Uint128"
+                },
+                {
+                  "type": "null"
+                }
+              ]
             }
           }
         }
@@ -315,6 +325,16 @@
               "type": [
                 "string",
                 "null"
+              ]
+            },
+            "price": {
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/Uint128"
+                },
+                {
+                  "type": "null"
+                }
               ]
             }
           }
@@ -681,6 +701,16 @@
             "string",
             "null"
           ]
+        },
+        "price": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Uint128"
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       }
     },
@@ -896,6 +926,9 @@
           }
         }
       ]
+    },
+    "Uint128": {
+      "type": "string"
     }
   }
 }

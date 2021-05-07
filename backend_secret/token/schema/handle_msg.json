@@ -3,7 +3,67 @@
   "title": "HandleMsg",
   "anyOf": [
     {
-      "description": "mint new token",
+      "type": "object",
+      "required": [
+        "set_price"
+      ],
+      "properties": {
+        "set_price": {
+          "type": "object",
+          "required": [
+            "price",
+            "token_id"
+          ],
+          "properties": {
+            "price": {
+              "$ref": "#/definitions/Uint128"
+            },
+            "token_id": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "reset_price"
+      ],
+      "properties": {
+        "reset_price": {
+          "type": "object",
+          "required": [
+            "token_id"
+          ],
+          "properties": {
+            "token_id": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "buy"
+      ],
+      "properties": {
+        "buy": {
+          "type": "object",
+          "required": [
+            "token_id"
+          ],
+          "properties": {
+            "token_id": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
       "type": "object",
       "required": [
         "mint_nft"
@@ -1116,6 +1176,16 @@
             "string",
             "null"
           ]
+        },
+        "price": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Uint128"
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       }
     },
@@ -1246,6 +1316,9 @@
           }
         }
       }
+    },
+    "Uint128": {
+      "type": "string"
     }
   }
 }
