@@ -1,11 +1,27 @@
 <script lang="ts">
   import { browser } from '$app/env'
   import { SecretStore, selectedAccount } from '$lib/modules/secret/secret-store'
-  import viewingKey from '$lib/modules/secret/viewingkey-store'
-
+  import { viewingKey } from '$lib/modules/secret/viewingkey-store'
   import { tokenContract } from './contract-interaction'
+  import { AllTokensStore, MyTokensStore, ShouldUpdate } from './token-store'
 
-  import { AllTokensStore, MyTokensStore } from './token-store'
+  let vkey: string | undefined = undefined
+
+  viewingKey.subscribe(value => {
+    vkey = value
+  })
+
+  async function setViewingkey() {
+    const entropy = SecretStore.getEntropy()
+    const viewingkey = await tokenContract.SendTransaction({
+      create_viewing_key: {
+        entropy,
+        padding: SecretStore.createPadding(entropy.length, 128)
+      }
+    })
+    viewingKey.set(viewingkey.viewing_key.key)
+    return viewingkey.viewing_key.key
+  }
 
   async function loadTokens() {
     const tokens = await tokenContract.SendQuery({ all_tokens: {} })
@@ -23,15 +39,15 @@
   }
 
   async function loadMyTokens() {
-    let vkey = viewingKey.getViewingKey($selectedAccount.address)
-    if (vkey === undefined) {
-      vkey = await viewingKey.addViewingKey($selectedAccount.address)
+    if (vkey === undefined || vkey.length === 0) {
+      vkey = await setViewingkey()
     }
     const mytokens = await tokenContract.SendQuery({
-      tokens: { owner: $selectedAccount.address, viewing_key: '' }
+      tokens: { owner: $selectedAccount.address, viewing_key: vkey }
     })
     MyTokensStore.set(mytokens.token_list.tokens)
     console.log('my tokens:', $MyTokensStore)
+    $ShouldUpdate = false
   }
 
   if (browser) {
@@ -45,9 +61,12 @@
   }
 
   $: {
-    if ($selectedAccount != null)
-      if ($selectedAccount.address != null && $selectedAccount.address.length > 0) {
-        loadMyTokens()
-      }
+    if ($ShouldUpdate) {
+      if ($selectedAccount != null)
+        if ($selectedAccount.address != null && $selectedAccount.address.length > 0) {
+          loadMyTokens()
+        }
+      loadTokens()
+    }
   }
 </script>

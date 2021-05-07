@@ -8,6 +8,7 @@ export type PublicToken = {
   price?: string | null
 }
 
+export const ShouldUpdate = writable<boolean>(true)
 
 export const AllTokensStore = writable<PublicToken[]>([])
 
