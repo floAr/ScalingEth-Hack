@@ -9,8 +9,7 @@
   import { fly } from 'svelte/transition'
 
   function numberWithCommas(x) {
-
-    return x?x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'):'Not for sale'
+    return x ? x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') : 'Not for sale'
   }
 </script>
 
@@ -38,14 +37,24 @@
         <span class="side-price"
           >Price: <span class="underlined-text">{numberWithCommas(price)}</span></span
         >
-        <button
-          class="side-button"
-          on:click={() => {
-            console.log('bought')
-          }}
-        >
-          buy me
-        </button>
+        <div class="interaction-pane">
+          <button
+            class="side-button"
+            on:click={() => {
+              console.log('bought')
+            }}
+          >
+            buy me
+          </button>
+          <button
+            class="side-button"
+            on:click={() => {
+              console.log('bought')
+            }}
+          >
+            buy me
+          </button>
+        </div>
       </div>
     </div>
     <div slot="footer" let:store={{ setFalse }} />
@@ -53,6 +62,11 @@
 </Lazy>
 
 <style lang="scss">
+  .interaction-pane {
+    display: flex;
+    flex-direction: row;
+    margin-top: auto;
+  }
   .flow-card {
     width: 250px;
     height: 250px;
@@ -170,7 +184,8 @@
 
   .side-content {
     width: 100%;
-    height: 50%;
+    min-height: 50%;
+    height: auto;
     left: calc(100% - 50px);
     top: calc(50% + 10px);
     position: absolute;
