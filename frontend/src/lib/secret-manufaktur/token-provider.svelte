@@ -1,7 +1,7 @@
 <script lang="ts">
   import { browser } from '$app/env'
   import { SecretStore, selectedAccount } from '$lib/modules/secret/secret-store'
-  import   ViewingKeyStore  from '$lib/modules/secret/viewingkey-store'
+  // import     from '$lib/modules/secret/viewingkey-store'
   import { tokenContract } from './contract-interaction'
 
   import { AllTokensStore, MyTokensStore } from './token-store'
@@ -22,12 +22,12 @@
   }
 
   async function loadMyTokens() {
-    let vkey = ViewingKeyStore.getViewingKey($selectedAccount.address)
-    if (vkey === undefined) {
-      vkey = await ViewingKeyStore.addViewingKey($selectedAccount.address)
-    }
+    // let vkey = ViewingKeyStore.getViewingKey($selectedAccount.address)
+    // if (vkey === undefined) {
+    //   vkey = await ViewingKeyStore.addViewingKey($selectedAccount.address)
+    // }
     const mytokens = await tokenContract.SendQuery({
-      tokens: { owner: $selectedAccount.address, viewing_key: vkey }
+      tokens: { owner: $selectedAccount.address, viewing_key: '' }
     })
     MyTokensStore.set(mytokens.token_list.tokens)
     console.log("my tokens:",$MyTokensStore)
