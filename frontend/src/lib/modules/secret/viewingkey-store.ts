@@ -5,10 +5,10 @@ import { persist, localStorage } from "@macfja/svelte-persistent-store";
 import { writable } from "svelte/store";
 import { SecretStore } from "./secret-store";
 
-// export type viewingKeyPair = {
-//     key: string,
-//     address: string
-// }
+export type viewingKeyPair = {
+    key: string,
+    address: string
+}
 
 
 // export const createStore = () => {
@@ -48,4 +48,4 @@ import { SecretStore } from "./secret-store";
 // const ViewingKeyStore = createStore();
 // export default ViewingKeyStore
 
-export const viewingKey = persist<string>(writable(''), localStorage(), 'viewingKey')
+export const viewingKey = persist<viewingKeyPair[]>(writable([]), localStorage(), 'viewingKey')
