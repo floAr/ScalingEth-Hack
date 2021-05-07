@@ -7,7 +7,10 @@
   import Lazy from 'svelte-lazy'
   import Modal from '$lib/components/modal.svelte'
   import { fly } from 'svelte/transition'
-  import Seperator from '$lib/components/seperator.svelte'
+
+  function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
 </script>
 
 <Lazy height={250} fadeOption={{ delay: 200, duration: 600 }} placeholder={''} class="flow-lazy">
@@ -31,13 +34,14 @@
         <span class="side-header">{name}</span>
         <hr class="side-separator" />
         <span class="side-description">{description}</span>
+        <span class="side-price">Price: <span class="underlined-text">{numberWithCommas(price)}</span></span>
         <button
           class="side-button"
           on:click={() => {
             console.log('bought')
           }}
         >
-          buy me for {price}
+          buy me
         </button>
       </div>
     </div>
@@ -67,6 +71,25 @@
     font-weight: bold;
     font-size: larger;
     text-align: center;
+    margin: 5px 0;
+  }
+
+  .underlined-text {
+    font-family: 'Cinzel Decorative';
+    letter-spacing: 0px;
+    position: relative;
+    margin: 0 5px;
+  }
+
+  .underlined-text::after {
+    width: 110%;
+    height: 2px;
+    content: '';
+    background: var(--theme-colors-text);
+    position: absolute;
+    left: -5%;
+    bottom: 2px;
+    border-radius: 2px;
   }
 
   .image-detail {
@@ -77,6 +100,11 @@
     margin: 1px;
     z-index: 10;
     border-radius: 2px;
+    box-shadow: rgb(23 23 23 / 20%) 4px 3px 13px;
+  }
+
+  .side-price {
+    margin: 3px 0;
   }
 
   .side-content {
@@ -92,6 +120,7 @@
     border-radius: 2px;
     display: flex;
     flex-direction: column;
+    box-shadow: rgb(23 23 23 / 20%) 4px 3px 13px;
   }
 
   .side-button {
@@ -121,7 +150,7 @@
     height: 2px;
     width: 100%;
     border-radius: 5px;
-    background-color: #bbb;
+    background-color: var(--theme-colors-text);
     transition: all 0.4s ease-in-out;
   }
 
