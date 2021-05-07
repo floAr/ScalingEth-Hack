@@ -3,9 +3,9 @@
 use std::collections::HashSet;
 
 use cosmwasm_std::{
-    log, to_binary, Api, Binary, BlockInfo, CanonicalAddr, CosmosMsg, Env, Extern, HandleResponse,
-    HandleResult, HumanAddr, InitResponse, InitResult, Querier, QueryResult, ReadonlyStorage,
-    StdError, StdResult, Storage, WasmMsg,
+    log, to_binary, Api, BankMsg, Binary, BlockInfo, CanonicalAddr, Coin, CosmosMsg, Env, Extern,
+    HandleResponse, HandleResult, HumanAddr, InitResponse, InitResult, Querier, QueryResult,
+    ReadonlyStorage, StdError, StdResult, Storage, Uint128, WasmMsg,
 };
 use cosmwasm_storage::{PrefixedStorage, ReadonlyPrefixedStorage};
 
@@ -470,6 +470,211 @@ pub fn batch_mint<S: Storage, A: Api, Q: Querier>(
             token_ids: minted,
         })?),
     })
+}
+
+pub fn set_price<S: Storage, A: Api, Q: Querier>(
+    deps: &mut Extern<S, A, Q>,
+    env: Env,
+    config: &Config,
+    priority: u8,
+    token_id: &str,
+    price: Uint128,
+) -> HandleResult {
+    check_status(config.status, priority)?;
+    let config: Config = load(&deps.storage, CONFIG_KEY)?;
+    let map2idx = ReadonlyPrefixedStorage::new(PREFIX_MAP_TO_INDEX, &deps.storage);
+    let may_idx: Option<u32> = may_load(&map2idx, token_id.as_bytes())?;
+    // if token id was found
+    if let Some(idx) = may_idx {
+        let meta_store = ReadonlyPrefixedStorage::new(PREFIX_PUB_META, &deps.storage);
+        let meta: Metadata = may_load(&meta_store, &idx.to_le_bytes())?.unwrap_or(Metadata {
+            name: None,
+            description: None,
+            image: None,
+            price: None,
+        });
+
+        let sender_raw = deps.api.canonical_address(&env.message.sender)?;
+
+        let custom_err = format!("Not authorized to update metadata of token {}", token_id);
+        // if token supply is private, don't leak that the token id does not exist
+        // instead just say they are not authorized for that token
+        let opt_err = if config.token_supply_is_public {
+            None
+        } else {
+            Some(&*custom_err)
+        };
+        let (token, idx) = get_token(&deps.storage, token_id, opt_err)?;
+
+        if token.owner == sender_raw {
+            let mut meta_store = PrefixedStorage::new(PREFIX_PUB_META, &mut deps.storage);
+            save(
+                &mut meta_store,
+                &idx.to_le_bytes(),
+                &Metadata {
+                    name: meta.name,
+                    description: meta.description,
+                    image: meta.image,
+                    price: Some(price),
+                },
+            )?;
+            Ok(HandleResponse {
+                messages: vec![],
+                log: vec![],
+                data: Some(to_binary(&HandleAnswer::SetPublicMetadata {
+                    status: Success,
+                })?),
+            })
+        } else {
+            return Err(StdError::generic_err("Error updating price"));
+        }
+    } else {
+        return Err(StdError::generic_err("Error updating price"));
+    }
+}
+
+pub fn unset_price<S: Storage, A: Api, Q: Querier>(
+    deps: &mut Extern<S, A, Q>,
+    env: Env,
+    config: &Config,
+    priority: u8,
+    token_id: &str,
+) -> HandleResult {
+    check_status(config.status, priority)?;
+    let config: Config = load(&deps.storage, CONFIG_KEY)?;
+    let map2idx = ReadonlyPrefixedStorage::new(PREFIX_MAP_TO_INDEX, &deps.storage);
+    let may_idx: Option<u32> = may_load(&map2idx, token_id.as_bytes())?;
+
+    // if token id was found
+    if let Some(idx) = may_idx {
+        let meta_store = ReadonlyPrefixedStorage::new(PREFIX_PUB_META, &deps.storage);
+        let meta: Metadata = may_load(&meta_store, &idx.to_le_bytes())?.unwrap_or(Metadata {
+            name: None,
+            description: None,
+            image: None,
+            price: None,
+        });
+
+        let sender_raw = deps.api.canonical_address(&env.message.sender)?;
+
+        let custom_err = format!("Not authorized to update metadata of token {}", token_id);
+        // if token supply is private, don't leak that the token id does not exist
+        // instead just say they are not authorized for that token
+        let opt_err = if config.token_supply_is_public {
+            None
+        } else {
+            Some(&*custom_err)
+        };
+        let (token, idx) = get_token(&deps.storage, token_id, opt_err)?;
+
+        if token.owner == sender_raw {
+            let mut meta_store = PrefixedStorage::new(PREFIX_PUB_META, &mut deps.storage);
+            save(
+                &mut meta_store,
+                &idx.to_le_bytes(),
+                &Metadata {
+                    name: meta.name,
+                    description: meta.description,
+                    image: meta.image,
+                    price: None,
+                },
+            )?;
+            Ok(HandleResponse {
+                messages: vec![],
+                log: vec![],
+                data: Some(to_binary(&HandleAnswer::SetPublicMetadata {
+                    status: Success,
+                })?),
+            })
+        } else {
+            return Err(StdError::generic_err("Error updating price"));
+        }
+    } else {
+        return Err(StdError::generic_err("Error updating price"));
+    }
+}
+
+pub fn buy<S: Storage, A: Api, Q: Querier>(
+    deps: &mut Extern<S, A, Q>,
+    env: &Env,
+    config: &mut Config,
+    priority: u8,
+    token_id: &str,
+) -> HandleResult {
+    check_status(config.status, priority)?;
+    let map2idx = ReadonlyPrefixedStorage::new(PREFIX_MAP_TO_INDEX, &deps.storage);
+    let may_idx: Option<u32> = may_load(&map2idx, token_id.as_bytes())?;
+    let sender_raw = deps.api.canonical_address(&env.message.sender)?;
+    let contract_raw = deps.api.canonical_address(&env.contract.address)?;
+    let (token, idx) = get_token(&deps.storage, token_id, None)?;
+
+    // if token id was found
+    if let Some(idx) = may_idx {
+        let meta_store = ReadonlyPrefixedStorage::new(PREFIX_PUB_META, &deps.storage);
+        let meta: Metadata = may_load(&meta_store, &idx.to_le_bytes())?.unwrap_or(Metadata {
+            name: None,
+            description: None,
+            image: None,
+            price: None,
+        });
+
+        let mut messages: Vec<CosmosMsg> = Vec::new();
+        match meta.price {
+            // The division was valid
+            Some(price) => {
+                if env.message.sent_funds.len() != 1
+                    || env.message.sent_funds[0].amount != price
+                    || env.message.sent_funds[0].denom != *"uscrt"
+                {
+                    return Err(StdError::generic_err(
+                        "You must pay exactly 1 SCRT to buy a pack of heroes",
+                    ));
+                }
+                // send money
+                let amount: Vec<Coin> = vec![Coin {
+                    denom: "uscrt".to_string(),
+                    amount: price,
+                }];
+                messages.push(CosmosMsg::Bank(BankMsg::Send {
+                    from_address: deps.api.human_address(&contract_raw)?,
+                    to_address: deps.api.human_address(&token.owner)?,
+                    amount,
+                }));
+            }
+            None =>{}
+        }
+
+        let mut meta_store = PrefixedStorage::new(PREFIX_PUB_META, &mut deps.storage);
+        save(
+            &mut meta_store,
+            &idx.to_le_bytes(),
+            &Metadata {
+                name: meta.name,
+                description: meta.description,
+                image: meta.image,
+                price: None,
+            },
+        )?;
+
+        // transfer
+
+        let transfers = Some(vec![Transfer {
+            recipient: deps.api.human_address(&sender_raw)?,
+            token_ids: vec![token_id.to_string()],
+            memo:None,
+        }]);
+        let _m = send_list(deps, env, config, &sender_raw, transfers, None)?;
+
+          Ok(HandleResponse {
+            messages: messages,
+            log: vec![],
+            data: Some(to_binary(&HandleAnswer::SetPublicMetadata {
+                status: Success,
+            })?),
+        })
+    } else {
+        return Err(StdError::generic_err("Error buying token"));
+    }
 }
 
 /// Returns HandleResult
@@ -1682,11 +1887,13 @@ pub fn query_nft_info<S: ReadonlyStorage>(storage: &S, token_id: &str) -> QueryR
             name: None,
             description: None,
             image: None,
+            price: None,
         });
         return to_binary(&QueryAnswer::NftInfo {
             name: meta.name,
             description: meta.description,
             image: meta.image,
+            price: meta.price,
         });
     }
     // token id wasn't found
@@ -1702,6 +1909,7 @@ pub fn query_nft_info<S: ReadonlyStorage>(storage: &S, token_id: &str) -> QueryR
         name: None,
         description: None,
         image: None,
+        price: None,
     })
 }
 
@@ -1746,11 +1954,13 @@ pub fn query_private_meta<S: Storage, A: Api, Q: Querier>(
         name: None,
         description: None,
         image: None,
+        price: None,
     });
     to_binary(&QueryAnswer::PrivateMetadata {
         name: meta.name,
         description: meta.description,
         image: meta.image,
+        price: meta.price,
     })
 }
 

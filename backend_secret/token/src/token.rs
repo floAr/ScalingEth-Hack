@@ -1,7 +1,7 @@
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-use cosmwasm_std::CanonicalAddr;
+use cosmwasm_std::{CanonicalAddr, Uint128};
 
 use crate::state::Permission;
 
@@ -26,4 +26,6 @@ pub struct Metadata {
     pub description: Option<String>,
     /// optional uri to contain an image, additional data fields, etc...
     pub image: Option<String>,
+    // optional price point. Public : token price, private current bid
+    pub price: Option<Uint128>,
 }

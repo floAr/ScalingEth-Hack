@@ -1,7 +1,7 @@
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-use cosmwasm_std::{Binary, Coin, HumanAddr};
+use cosmwasm_std::{Binary, Coin, HumanAddr, Uint128};
 
 use crate::expiration::Expiration;
 use crate::token::Metadata;
@@ -95,7 +95,6 @@ pub struct PostInitCallback {
 #[derive(Serialize, Deserialize, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum HandleMsg {
-    /// mint new token
     MintNft {
         /// optional token id. if omitted, use current token index
         token_id: Option<String>,
@@ -768,11 +767,13 @@ pub enum QueryAnswer {
         name: Option<String>,
         description: Option<String>,
         image: Option<String>,
+        price: Option<Uint128>,
     },
     PrivateMetadata {
         name: Option<String>,
         description: Option<String>,
         image: Option<String>,
+        price: Option<Uint128>,
     },
     AllNftInfo {
         access: Cw721OwnerOfResponse,
