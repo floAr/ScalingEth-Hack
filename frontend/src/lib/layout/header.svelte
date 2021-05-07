@@ -16,6 +16,9 @@
       <div class="header-link">
         <a href=".">Schaufenster</a>
       </div>
+      <div class="header-link">
+        <a href="gallery">Gallery</a>
+      </div>
     </div>
     <div
       class="header-logo"
@@ -35,6 +38,10 @@
     <div class="header-container right">
       <div class="header-link">
         <a href="mint">Manufaktur</a>
+      </div>
+
+      <div class="header-link">
+        <a href="collection">Kollektion</a>
       </div>
     </div>
   </div>
@@ -83,6 +90,8 @@
     display: flex;
     align-items: center;
     height: 100%;
+    width: 30vw;
+    justify-content: space-around;
   }
 
   .header-container.left {

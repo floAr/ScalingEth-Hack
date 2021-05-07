@@ -18,9 +18,11 @@ import TokenProvider from '$lib/secret-manufaktur/token-provider.svelte';
 
 <ThemeWrapper themes={themes} >
 	<TokenProvider />
-	<div id="parent">
+	<div class="parent">
 		<Header />
+		<div class="content">
 		<slot />
+		</div>
 		<Footer />
 	</div>
 </ThemeWrapper>
@@ -29,6 +31,9 @@ import TokenProvider from '$lib/secret-manufaktur/token-provider.svelte';
 	.parent {
 		display: grid;
 		grid-template-rows: auto 1fr auto;
+	}
+	.content {
+		min-height: 80vh;
 	}
 	:global(body) {
 		background-color: var(--theme-colors-background, initial);

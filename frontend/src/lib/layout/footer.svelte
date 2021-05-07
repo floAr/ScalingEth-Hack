@@ -21,7 +21,7 @@
         to anyone, even the nodes in the network.
       </p>
     </div>
-    <div class="footer-logo"><SecretLogo/></div>
+    <div class="footer-logo"><SecretLogo /></div>
     <ThemeIcon />
   </div>
 </div>
@@ -31,6 +31,9 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    /* position: fixed;
+    bottom: 0; */
+    width: 100%;
   }
   .footer-fineprint {
     display: flex;
@@ -44,7 +47,7 @@
   }
 
   .footer-info {
-    width: 50%;
+    width: 80%;
     display: flex;
     flex-direction: column;
   }
@@ -52,6 +55,6 @@
   .footer-logo {
     display: grid;
     place-items: center;
-    width: 120px;
+    width: 100px;
   }
 </style>
