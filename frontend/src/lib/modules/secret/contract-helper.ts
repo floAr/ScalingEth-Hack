@@ -1,4 +1,5 @@
 import { browser } from "$app/env";
+import { tokenContract } from "$lib/secret-manufaktur/contract-interaction";
 import type { CosmWasmClient, SigningCosmWasmClient } from "secretjs";
 import type { Coin } from "secretjs/types/types";
 import type { toast_module } from "../toast/toast";
@@ -12,7 +13,7 @@ let workingOnQuery = false;
 if (browser) {
     SecretStore.subscribe(value => {
         client = value.client
-        queryClient= value.queryClient
+        queryClient = value.queryClient
         workingOnQuery = value.config.queryAsWorking ?? false;
     })
 }
@@ -37,7 +38,6 @@ export interface InteractionError {
 // eslint-disable-next-line @typescript-eslint/ban-types
 export async function query<IN extends object, OUT>(address: HumanAddr, query_msg: IN): Promise<OUT> {
     const _client = client ?? queryClient
-    console.log(_client,client,queryClient)
     if (_client == null) {
         parseError("client is null or undefined", true)
         return
@@ -82,12 +82,17 @@ export async function transact<IN extends object, OUT>(address: HumanAddr, msg: 
 
 export function parseError(err: Error | string, emit = false): InteractionError {
 
-    console.log(err)
+    console.log(err.toString())
     let result: InteractionError = undefined
+    result = { type: "other", errTitle: 'Error', errBody: err.toString() }
+
     if (err.toString().includes('client is null or undefined'))
         result = { type: "no client", errTitle: 'Not connected', errBody: "Make sure you connect to Keplr wallet" }
+    if (err.toString().includes('decrypt'))
+        result = { type: "decryption", errTitle: 'Missing viewingkey', errBody: "We need to refresh your viewing key!" }
 
-    result = { type: "other", errTitle: 'Error', errBody: err.toString() }
+
+
     if (emit) {
         if (toast) {
             toast.error(result.errTitle, result.errBody)

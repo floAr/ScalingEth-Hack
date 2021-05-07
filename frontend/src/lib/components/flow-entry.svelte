@@ -1,5 +1,5 @@
 <script lang="ts">
-  export let id: number = 0
+  export let id: string = ''
   export let name: string = ''
   export let description: string = ''
   export let cid: string = ''

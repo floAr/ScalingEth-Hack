@@ -1,12 +1,12 @@
 <script lang="ts">
   import FlowEntry from '$lib/components/flow-entry.svelte'
-  import { tokenStore } from '$lib/secret-manufaktur/token-store'
+  import { AllTokensStore } from '$lib/secret-manufaktur/token-store'
 </script>
 
 <div class="flow-container">
   <div class="flow-center">
     <div class="flow-grid">
-      {#each $tokenStore as { name, description, image }, i}
+      {#each $AllTokensStore as { name, description, image }, i}
         <FlowEntry id={i} {name} {description} cid={image} />
       {/each}
     </div>
