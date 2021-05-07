@@ -12,7 +12,7 @@ export type viewingKeyPair = {
 
 
 export const createStore = () => {
-    const { subscribe, update } = persist<viewingKeyPair[]>(writable<viewingKeyPair[]>([]),localStorage(),'viewingKeys')
+    const { subscribe, update } = persist<viewingKeyPair[]>(writable<viewingKeyPair[]>([]), localStorage(), 'viewingKeys')
 
     const addViewingKey = async (address: string) => {
         const entropy = SecretStore.getEntropy();
@@ -23,7 +23,7 @@ export const createStore = () => {
             }
         })
         update(state => {
-            const filtered = state.filter(vkp=>{ return vkp.address!==address})
+            const filtered = state.filter(vkp => { return vkp.address !== address })
             return [...filtered, { address, key: viewingkey.viewing_key.key }]
         })
         console.log(viewingkey)
@@ -45,6 +45,5 @@ export const createStore = () => {
     return { addViewingKey, getViewingKey }
 }
 
-export const ViewingKeyStore = createStore();
-
-export const version = persist<string>(writable('1'),localStorage(),'version')
+const ViewingKeyStore = createStore();
+export default ViewingKeyStore
