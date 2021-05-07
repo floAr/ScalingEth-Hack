@@ -29,11 +29,14 @@
 		"svelte-themer": "^0.4.6",
 		"tslib": "^2.0.0",
 		"typescript": "^4.0.0",
-		"vite": "^2.2.3"
+		"vite": "^2.2.3",
+		"@macfja/svelte-persistent-store": "^1.1.0"
 	},
 	"type": "module",
 	"dependencies": {
-		"@macfja/svelte-persistent-store": "^1.1.0",
+		"@ethersproject/contracts": "^5.1.1",
+		"@ethersproject/providers": "^5.1.2",
+		"@superfluid-finance/js-sdk": "^0.4.3",
 		"@toruslabs/openlogin": "^0.7.8",
 		"axios": "^0.21.1",
 		"nft.storage": "^0.4.1",

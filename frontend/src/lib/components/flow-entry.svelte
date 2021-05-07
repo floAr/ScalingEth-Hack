@@ -3,6 +3,7 @@
   export let name: string = ''
   export let description: string = ''
   export let cid: string = ''
+  export let price: string | undefined = undefined
   import Lazy from 'svelte-lazy'
   import Modal from '$lib/components/modal.svelte'
   import { fly } from 'svelte/transition'
@@ -36,7 +37,7 @@
             console.log('bought')
           }}
         >
-          buy me
+          buy me for {price}
         </button>
       </div>
     </div>
