@@ -1,6 +1,7 @@
 
 import { tokenContract } from "$lib/secret-manufaktur/contract-interaction";
 import { persist, localStorage } from "@macfja/svelte-persistent-store";
+
 import { writable } from "svelte/store";
 import { SecretStore } from "./secret-store";
 
