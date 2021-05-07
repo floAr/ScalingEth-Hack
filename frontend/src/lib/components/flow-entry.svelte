@@ -9,8 +9,8 @@
   import { fly } from 'svelte/transition'
 
   function numberWithCommas(x) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-}
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+  }
 </script>
 
 <Lazy height={250} fadeOption={{ delay: 200, duration: 600 }} placeholder={''} class="flow-lazy">
@@ -19,7 +19,7 @@
       class="flow-card"
       slot="trigger"
       let:setTrue
-      style="--flow-cid: url('https://{cid}.ipfs.dweb.link/')"
+      style="--flow-cid: url('https://{cid}.ipfs.dweb.link/'); --flow-name: '{name}';"
     >
       <div class="flow-content" on:click={setTrue} />
     </div>
@@ -34,7 +34,9 @@
         <span class="side-header">{name}</span>
         <hr class="side-separator" />
         <span class="side-description">{description}</span>
-        <span class="side-price">Price: <span class="underlined-text">{numberWithCommas(price)}</span></span>
+        <span class="side-price"
+          >Price: <span class="underlined-text">{numberWithCommas(price)}</span></span
+        >
         <button
           class="side-button"
           on:click={() => {
@@ -58,12 +60,70 @@
     width: 100%;
     height: 100%;
   }
+
+  .flow-title {
+    width: 100%;
+    height: 100%;
+  }
   .flow-content {
     width: 100%;
     height: 100%;
     background: var(--flow-cid);
     background-size: cover;
     margin: 1px;
+    position: relative;
+    cursor: pointer;
+
+    // &::before {
+    //   content: '';
+    //   position: absolute;
+    //   top: 5%;
+    //   left: 0;
+    //   width: 100%;
+    //   height: 90%;
+    //   z-index: 10;
+    //   border-top: 2px solid var(--theme-colors-text);
+    //   border-bottom: 2px solid var(--theme-colors-text);
+    //   border-radius: 2px;
+    //   transform: scaleX(0);
+
+    //   transition: all 0.4s ease-in-out;
+    // }
+    // &::after {
+    //   content: '';
+    //   position: absolute;
+    //   top: 0;
+    //   left: 5%;
+    //   width: 90%;
+    //   height: 100%;
+    //   z-index: 10;
+    //   border-left: 2px solid var(--theme-colors-text);
+    //   border-right: 2px solid var(--theme-colors-text);
+    //   border-radius: 2px;
+    //   transform: scaleY(0);
+
+    //   transition: all 0.4s ease-in-out;
+    // }
+
+    &::after {
+      content: var(--flow-name);
+      color: var(--theme-colors-background);
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      top: 0;
+      opacity: 0;
+      position: absolute;
+      transition: all 0.4s ease-in-out;
+      font-family: 'Cinzel Decorative';
+    }
+    &:hover::after {
+      opacity: 1;
+      box-shadow: inset 0 -250px 0 0 var(--theme-colors-text);
+    }
   }
 
   .side-header {
@@ -113,7 +173,7 @@
     left: calc(100% - 50px);
     top: calc(50% + 10px);
     position: absolute;
-    background: var(--theme-colors-background-contrast);
+    background: var(--theme-colors-background);
     padding: 10px;
     padding-left: 60px;
     z-index: -1;

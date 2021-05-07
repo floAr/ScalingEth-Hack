@@ -285,6 +285,24 @@
     font-weight: bold;
     color: var(--theme-colors-text);
     margin: 20px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .hae-button::before {
+    position: absolute;
+    bottom: 0;
+    left: -100%;
+    content: '';
+    height: 2px;
+    width: 100%;
+    border-radius: 5px;
+    background-color: var(--theme-colors-text);
+    transition: all 0.4s ease-in-out;
+  }
+
+  .hae-button:hover::before {
+    left: 0;
   }
 
   button:disabled {

@@ -109,7 +109,7 @@
     height: 2px;
     width: 100%;
     border-radius: 5px;
-    background-color: #bbb;
+    background-color: var(--theme-colors-text);
     transition: all 0.4s ease-in-out;
   }
 
