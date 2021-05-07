@@ -192,6 +192,7 @@
     align-items: center;
     justify-content: center;
     min-width: 80vw;
+    height: 75vh;
   }
   .mint-container span {
     width: max-content;

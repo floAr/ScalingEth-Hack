@@ -43,6 +43,7 @@
 
 <style lang="scss">
   .nav-bar {
+    height: 12vh;
     display: flex;
     align-items: center;
     justify-content: space-around;
