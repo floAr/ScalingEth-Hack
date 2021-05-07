@@ -6,7 +6,7 @@
 <div class="flow-container">
   <div class="flow-center">
     <div class="flow-grid">
-      {#each $AllTokensStore as { name, description, image }, i}
+      {#each $AllTokensStore as { name, description, image, price }, i}
         <FlowEntry id={i} {name} {description} cid={image} />
       {/each}
     </div>

@@ -5,6 +5,7 @@ export type PublicToken = {
   description?: string | null
   image?: string | null
   name?: string | null
+  price?: string | null
 }
 
 
