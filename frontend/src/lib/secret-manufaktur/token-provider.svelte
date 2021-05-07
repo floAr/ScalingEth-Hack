@@ -3,7 +3,7 @@
   import { SecretStore, selectedAccount } from '$lib/modules/secret/secret-store'
   import { viewingKey } from '$lib/modules/secret/viewingkey-store'
   import { tokenContract } from './contract-interaction'
-  import { AllTokensStore, MyTokensStore, ShouldUpdate } from './token-store'
+  import { AllTokensStore, MyTokensStore, ShouldUpdateTokens } from './token-store'
 
   // let vkey: string | undefined = undefined
   // if (browser) {
@@ -53,7 +53,7 @@
       })
       MyTokensStore.set(mytokens.token_list.tokens)
       console.log('my tokens:', $MyTokensStore)
-      $ShouldUpdate = false
+      $ShouldUpdateTokens = false
     }
   }
 
@@ -69,7 +69,7 @@
 
   $: {
     if (browser) {
-      if ($ShouldUpdate) {
+      if ($ShouldUpdateTokens) {
         if ($selectedAccount != null)
           if ($selectedAccount.address != null && $selectedAccount.address.length > 0) {
             loadMyTokens()

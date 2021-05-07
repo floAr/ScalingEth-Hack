@@ -3,6 +3,7 @@
   import { selectedAccount } from '$lib/modules/secret/secret-store'
   import { mintContract, tokenContract } from '$lib/secret-manufaktur/contract-interaction'
   import type { ImageApiResponseData } from '$lib/secret-manufaktur/image-api'
+  import { AllTokensStore, ShouldUpdateTokens } from '$lib/secret-manufaktur/token-store'
 
   // import { getFile, storeFile } from '$lib/modules/ipfs/ipfs-store'
 
@@ -101,6 +102,7 @@
         fullres: imgResponse.fullRes.value.cid
       }
     })
+    $ShouldUpdateTokens = true
     // const answer =  await tokenContract.SendTransaction({
     //   mint_nft: {
     //     owner: $selectedAccount.address,
