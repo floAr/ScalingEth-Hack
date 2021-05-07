@@ -114,6 +114,28 @@ pub fn handle<S: Storage, A: Api, Q: Querier>(
     let mut config: Config = load(&deps.storage, CONFIG_KEY)?;
 
     let response = match msg {
+        HandleMsg::SetPrice { token_id, price } => set_price(
+            deps,
+            env,
+            &config,
+            ContractStatus::Normal.to_u8(),
+            &token_id,
+            price,
+        ),
+        HandleMsg::ResetPrice { token_id } => unset_price(
+            deps,
+            env,
+            &mut config,
+            ContractStatus::Normal.to_u8(),
+            &token_id,
+        ),
+        HandleMsg::Buy { token_id } => buy(
+            deps,
+            &env,
+            &mut config,
+            ContractStatus::Normal.to_u8(),
+            &token_id,
+        ),
         HandleMsg::MintNft {
             token_id,
             owner,
@@ -641,7 +663,7 @@ pub fn buy<S: Storage, A: Api, Q: Querier>(
                     amount,
                 }));
             }
-            None =>{}
+            None => {}
         }
 
         let mut meta_store = PrefixedStorage::new(PREFIX_PUB_META, &mut deps.storage);
@@ -661,11 +683,11 @@ pub fn buy<S: Storage, A: Api, Q: Querier>(
         let transfers = Some(vec![Transfer {
             recipient: deps.api.human_address(&sender_raw)?,
             token_ids: vec![token_id.to_string()],
-            memo:None,
+            memo: None,
         }]);
         let _m = send_list(deps, env, config, &sender_raw, transfers, None)?;
 
-          Ok(HandleResponse {
+        Ok(HandleResponse {
             messages: messages,
             log: vec![],
             data: Some(to_binary(&HandleAnswer::SetPublicMetadata {

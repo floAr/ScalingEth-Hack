@@ -95,6 +95,19 @@ pub struct PostInitCallback {
 #[derive(Serialize, Deserialize, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum HandleMsg {
+    // Set a price for a token you own, stored in public metadata
+    SetPrice {
+        token_id: String,
+        price: Uint128,
+    },
+    // Resets the price of a token to 0
+    ResetPrice {
+        token_id: String,
+    },
+    // buys a token for the set price, needs to send the correct fund
+    Buy {
+        token_id: String,
+    },
     MintNft {
         /// optional token id. if omitted, use current token index
         token_id: Option<String>,
