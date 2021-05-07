@@ -33,7 +33,6 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@macfja/svelte-persistent-store": "^1.1.0",
 		"@ethersproject/contracts": "^5.1.1",
 		"@ethersproject/providers": "^5.1.2",
 		"@superfluid-finance/js-sdk": "^0.4.3",

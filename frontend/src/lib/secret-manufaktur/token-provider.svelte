@@ -5,27 +5,27 @@
   import { tokenContract } from './contract-interaction'
   import { AllTokensStore, MyTokensStore, ShouldUpdate } from './token-store'
 
-  let vkey: string | undefined = undefined
-  if (browser) {
-    viewingKey.subscribe(value => {
-      vkey = value
-    })
-  }
+  // let vkey: string | undefined = undefined
+  // if (browser) {
+  //   viewingKey.subscribe(value => {
+  //     vkey = value
+  //   })
+  // }
 
-  async function setViewingkey() {
-    if (browser) {
-      const entropy = SecretStore.getEntropy()
-      const viewingkey = await tokenContract.SendTransaction({
-        create_viewing_key: {
-          entropy,
-          padding: SecretStore.createPadding(entropy.length, 128)
-        }
-      })
-      viewingKey.set(viewingkey.viewing_key.key)
-      return viewingkey.viewing_key.key
-    }
-    return ''
-  }
+  // async function setViewingkey() {
+  //   if (browser) {
+  //     const entropy = SecretStore.getEntropy()
+  //     const viewingkey = await tokenContract.SendTransaction({
+  //       create_viewing_key: {
+  //         entropy,
+  //         padding: SecretStore.createPadding(entropy.length, 128)
+  //       }
+  //     })
+  //     viewingKey.set(viewingkey.viewing_key.key)
+  //     return viewingkey.viewing_key.key
+  //   }
+  //   return ''
+  // }
 
   async function loadTokens() {
     const tokens = await tokenContract.SendQuery({ all_tokens: {} })
@@ -44,8 +44,9 @@
 
   async function loadMyTokens() {
     if (browser) {
+      let vkey = viewingKey.getViewingKey($selectedAccount.address)
       if (vkey === undefined || vkey.length === 0) {
-        vkey = await setViewingkey()
+        vkey = await viewingKey.addViewingKey($selectedAccount.address)
       }
       const mytokens = await tokenContract.SendQuery({
         tokens: { owner: $selectedAccount.address, viewing_key: vkey }
