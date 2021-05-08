@@ -1,29 +1,45 @@
-<script lang="ts">
-  export let id: string = ''
-  export let name: string = ''
-  export let description: string = ''
-  export let cid: string = ''
-  export let price: string | undefined = undefined
-  import Lazy from 'svelte-lazy'
-  import Modal from '$lib/components/modal.svelte'
-  import { fly } from 'svelte/transition'
-  import type { FlowButton } from '$lib/secret-manufaktur/types'
-
-  export let Buttons: FlowButton[] = []
-
-  function numberWithCommas(x:string) {
-    return x ? (Number(x)/1000000).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')+' SCRT': 'Not for sale'
+<script context="module">
+  export async function load({ fetch, page }) {
+    const { id } = page.params
+    console.log(id)
+    return { props: { token_id: id.toString() } }
   }
-
 </script>
 
-<Lazy height={250} fadeOption={{ delay: 200, duration: 600 }} placeholder={''} class="flow-lazy">
-  <Modal>
+<script lang="ts">
+  import { onMount } from 'svelte'
+  import { AllTokensStore } from '$lib/secret-manufaktur/token-store'
+  import { buttons } from '$lib/secret-manufaktur/buttonSets'
+  import { fly } from 'svelte/transition'
+  import Modal from '$lib/components/modal.svelte'
+  import { goto } from '$app/navigation'
+  export let token_id: string
+
+  const Buttons = buttons
+  function numberWithCommas(x: string) {
+    return x
+      ? (Number(x) / 1000000).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ' SCRT'
+      : 'Not for sale'
+  }
+  let token = undefined
+  $: {
+    token = $AllTokensStore.find(t => t.id == token_id)
+    console.log(token)
+  }
+</script>
+
+{#if token !== undefined}
+  <Modal
+    open={true}
+    onClose={() => {
+      goto('/')
+    }}
+  >
     <div
       class="flow-card"
       slot="trigger"
       let:setTrue
-      style="--flow-cid: url('https://{cid}.ipfs.dweb.link/'); --flow-name: '{name}';"
+      style="--flow-cid: url('https://{token.image}.ipfs.dweb.link/'); --flow-name: '{token.name}';"
     >
       <div class="flow-content" on:click={setTrue} />
     </div>
@@ -31,23 +47,23 @@
     <!-- Modal / detail view -->
     <div
       slot="content"
-      style="--flow-cid: url('https://{cid}.ipfs.dweb.link/'); overflow: visible; position: relative;"
+      style="--flow-cid: url('https://{token.image}.ipfs.dweb.link/'); overflow: visible; position: relative;"
     >
       <div class="image-detail" />
       <div class="side-content" in:fly={{ x: -200, duration: 1000 }}>
-        <span class="side-header">{name}</span>
+        <span class="side-header">{token.name}</span>
         <hr class="side-separator" />
-        <span class="side-description">{description}</span>
+        <span class="side-description">{token.description}</span>
         <span class="side-price"
-          >Price: <span class="underlined-text">{numberWithCommas(price)}</span></span
+          >Price: <span class="underlined-text">{numberWithCommas(token.price)}</span></span
         >
         <div class="interaction-pane">
           {#each Buttons as { title, func, active }, i}
-            {#if active({ id, name, description, price })}
+            {#if active(token)}
               <button
                 class="side-button"
                 on:click={() => {
-                  func({ id, name, description, price })
+                  func(token)
                 }}
               >
                 {title}
@@ -59,7 +75,7 @@
     </div>
     <div slot="footer" let:store={{ setFalse }} />
   </Modal>
-</Lazy>
+{/if}
 
 <style lang="scss">
   .interaction-pane {
@@ -72,6 +88,7 @@
     width: 250px;
     height: 250px;
     position: relative;
+    display: none;
   }
   .flow-lazy {
     width: 100%;

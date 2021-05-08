@@ -1,3 +1,5 @@
+import { SecretStore, selectedAccount } from "$lib/modules/secret/secret-store";
+import { viewingKey } from "$lib/modules/secret/viewingkey-store";
 import { tokenContract } from "./contract-interaction";
 import { isMyToken, PublicToken } from "./token-store";
 import type { FlowButton } from "./types";
@@ -37,5 +39,24 @@ export const buttons: FlowButton[] = [
                 tokenContract.SendTransaction({ set_price: { token_id: t.id, price: price.toString() } })
             }
         }, active: (t) => { return t.price != null && isMyToken(t.id) }
+    },
+    // download only works if I own the token
+    {
+        title: 'download', func: (t) => {
+            selectedAccount.subscribe(async value => {
+                const vkey = viewingKey.getViewingKey(value.address)
+                const private_meta = await tokenContract.SendQuery({ private_metadata: { token_id: t.id, viewer: { address: value.address, viewing_key: vkey } } })
+                const url='https://'+private_meta.private_metadata.image+'.ipfs.dweb.link/'
+                const a = document.createElement('a')
+                a.href = url
+                a.target='_blank'
+                a.download = url.split('/').pop()
+                document.body.appendChild(a)
+                a.click()
+                document.body.removeChild(a)
+                console.log(private_meta)
+            })
+
+        }, active: (t) => { return isMyToken(t.id) }
     },
 ]
