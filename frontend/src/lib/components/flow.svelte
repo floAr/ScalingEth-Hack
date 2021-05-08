@@ -1,6 +1,6 @@
 <script lang="ts">
   import FlowEntry from '$lib/components/flow-entry.svelte'
-  import { AllTokensStore } from '$lib/secret-manufaktur/token-store'
+  import { AllTokensStore, MyTokensStore } from '$lib/secret-manufaktur/token-store'
 
   type PublicToken = {
     id: string
@@ -9,14 +9,31 @@
     name?: string | null
     price?: string | null
   }
+
+  let myTokens: PublicToken[] = []
+  export let predicate: (token: PublicToken) => boolean = undefined
+
   export let Buttons: { title: string; func: (token: PublicToken) => void }[] = []
+
+  $: {
+    myTokens = []
+    $AllTokensStore.forEach(token => {
+      if (token !== undefined) {
+        if (predicate === undefined || predicate(token)) {
+          myTokens = [...myTokens, token]
+        }
+      }
+    })
+  }
+
+
 </script>
 
 <div class="flow-container">
   <div class="flow-center">
     <div class="flow-grid">
-      {#each $AllTokensStore as { name, description, image, price, id }, i}
-        <FlowEntry {id} {name} {description} cid={image} {price} {Buttons}/>
+      {#each myTokens as { name, description, image, price, id }, i}
+        <FlowEntry {id} {name} {description} cid={image} {price} {Buttons} />
       {/each}
     </div>
   </div>

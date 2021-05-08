@@ -11,7 +11,7 @@ export type PublicToken = {
 
 export const sortTokens = (tokens: PublicToken[]) => {
   return tokens.sort((t1, t2) => {
-    return Number.parseInt(t1.id) < Number.parseInt(t2.id) ? -1 : 1
+    return Number.parseInt(t1.id) < Number.parseInt(t2.id) ? 1 : -1
   })
 }
 
@@ -19,11 +19,18 @@ export const updateToken = async (tokenId: string) => {
   const token = await tokenContract.SendQuery({ nft_info: { token_id: tokenId } })
   AllTokensStore.update(tokens => {
     const otherTokens = tokens.filter(t => t.id !== tokenId);
-    return sortTokens([...otherTokens, { ...token, id: tokenId }])
+    return sortTokens([...otherTokens, { ...token.nft_info, id: tokenId }])
   })
 }
 
-export const ShouldUpdateTokens = writable<boolean>(true)
+export const loadTokens = async () => {
+  const tokens = await tokenContract.SendQuery({ all_tokens: {} })
+  let token
+
+  for (const element of tokens.token_list.tokens.reverse()) {
+    updateToken(element)
+  }
+}
 
 export const AllTokensStore = writable<PublicToken[]>([])
 

@@ -1,27 +1,34 @@
 <script lang="ts">
-  import Mytokens from '$lib/components/mytokens.svelte'
+  import Flow from '$lib/components/flow.svelte'
+  import { MyTokensStore } from '$lib/secret-manufaktur/token-store'
   import type { PublicToken } from '$lib/secret-manufaktur/token-store'
   import Connector from '$lib/components/connector.svelte'
 
-  let predicate: (token: PublicToken) => boolean = undefined
+  const isMyToken = (token: PublicToken) => {
+    return $MyTokensStore.includes(token.id)
+  }
+
+  let predicate: (token: PublicToken) => boolean = isMyToken
 
   const showAll = () => {
-    predicate = undefined
+    predicate = isMyToken
   }
+
   const showOnSale = () => {
     predicate = token => {
-        console.log(token.name,token.price,token.price != null)
-      return token.price != null
+      console.log(token.name, token.price, token.price != null)
+      return isMyToken(token) && token.price != null
     }
   }
 </script>
-<Connector redirect={'/collection'}/>
+
+<Connector redirect={'/collection'} />
 <div class="collection-header">
   <button on:click={showAll}>All tokens</button>
   <button on:click={showOnSale}>On Sale</button>
   <button>All tokens</button>
 </div>
-<Mytokens {predicate} />
+<Flow {predicate} />
 
 <style lang="scss">
   .collection-header {

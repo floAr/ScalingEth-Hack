@@ -2,8 +2,9 @@
   import { browser } from '$app/env'
   import { SecretStore, selectedAccount } from '$lib/modules/secret/secret-store'
   import { viewingKey } from '$lib/modules/secret/viewingkey-store'
+import { onMount } from 'svelte';
   import { tokenContract } from './contract-interaction'
-  import { AllTokensStore, MyTokensStore, ShouldUpdateTokens } from './token-store'
+  import { AllTokensStore, loadTokens, MyTokensStore } from './token-store'
 
   // let vkey: string | undefined = undefined
   // if (browser) {
@@ -27,20 +28,20 @@
   //   return ''
   // }
 
-  async function loadTokens() {
-    const tokens = await tokenContract.SendQuery({ all_tokens: {} })
-    let token
+  // async function loadTokens() {
+  //   const tokens = await tokenContract.SendQuery({ all_tokens: {} })
+  //   let token
 
-    for (const element of tokens.token_list.tokens.reverse()) {
-      if ($AllTokensStore.find(t => t.id === element) === undefined) {
-        token = await tokenContract.SendQuery({ nft_info: { token_id: element } })
+  //   for (const element of tokens.token_list.tokens.reverse()) {
+  //     if ($AllTokensStore.find(t => t.id === element) === undefined) {
+  //       token = await tokenContract.SendQuery({ nft_info: { token_id: element } })
 
-        AllTokensStore.update(tokens => {
-          return [...tokens, { ...token.nft_info, id: element }]
-        })
-      }
-    }
-  }
+  //       AllTokensStore.update(tokens => {
+  //         return [...tokens, { ...token.nft_info, id: element }]
+  //       })
+  //     }
+  //   }
+  // }
 
   async function loadMyTokens() {
     if (browser) {
@@ -53,7 +54,7 @@
       })
       MyTokensStore.set(mytokens.token_list.tokens)
       console.log('my tokens:', $MyTokensStore)
-      $ShouldUpdateTokens = false
+      // $ShouldUpdateTokens = false
     }
   }
 
@@ -69,7 +70,7 @@
 
   $: {
     if (browser) {
-      if ($ShouldUpdateTokens) {
+      if (true) {
         if ($selectedAccount != null)
           if ($selectedAccount.address != null && $selectedAccount.address.length > 0) {
             loadMyTokens()
@@ -78,5 +79,13 @@
       }
     }
   }
+
+  // onMount(()=>{
+  //   if(browser){
+  //     window.setInterval(()=>{
+  //       loadTokens()
+  //     },1000)
+  //   }
+  // })
 </script>
 <div/>
