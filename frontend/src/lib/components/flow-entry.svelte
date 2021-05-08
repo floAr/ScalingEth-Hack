@@ -1,53 +1,65 @@
 <script lang="ts">
   export let id: string = ''
-  export let name: string = ''
-  export let description: string = ''
-  export let cid: string = ''
-  export let price: string | undefined = undefined
+  // export let name: string = ''
+  // export let description: string = ''
+  // export let cid: string = ''
+  // export let price: string | undefined = undefined
   import Lazy from 'svelte-lazy'
   import Modal from '$lib/components/modal.svelte'
   import { fly } from 'svelte/transition'
   import type { FlowButton } from '$lib/secret-manufaktur/types'
+  import { getToken } from '$lib/secret-manufaktur/token-store'
 
   export let Buttons: FlowButton[] = []
 
-  function numberWithCommas(x:string) {
-    return x ? (Number(x)/1000000).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')+' SCRT': 'Not for sale'
+  function numberWithCommas(x: string) {
+    return x
+      ? (Number(x) / 1000000).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ' SCRT'
+      : 'Not for sale'
   }
 
+  let token = undefined
+  const getMyToken = async () => {
+    token = await getToken(id)
+    console.log(token)
+  }
+
+  $:{
+    getMyToken()
+  }
 </script>
 
 <!-- <Lazy height={250} fadeOption={{ delay: 200, duration: 600 }} placeholder={''} class="flow-lazy"> -->
+{#if token}
   <Modal>
     <div
       class="flow-card"
       slot="trigger"
       let:setTrue
-      style="--flow-cid: url('https://{cid}.ipfs.dweb.link/'); --flow-name: '{name}';"
+      style="--flow-cid: url('https://{token.image}.ipfs.dweb.link/'); --flow-name: '{token.name}';"
     >
       <div class="flow-content" on:click={setTrue} />
     </div>
-
     <!-- Modal / detail view -->
     <div
       slot="content"
-      style="--flow-cid: url('https://{cid}.ipfs.dweb.link/'); overflow: visible; position: relative;"
+      style="--flow-cid: url('https://{token.image}.ipfs.dweb.link/'); overflow: visible; position: relative;"
     >
       <div class="image-detail" />
       <div class="side-content" in:fly={{ x: -200, duration: 1000 }}>
-        <span class="side-header">{name}</span>
+        <span class="side-header">{token.name}</span>
         <hr class="side-separator" />
-        <span class="side-description">{description}</span>
+        <span class="side-description">{token.description}</span>
         <span class="side-price"
-          >Price: <span class="underlined-text">{numberWithCommas(price)}</span></span
+          >Price: <span class="underlined-text">{numberWithCommas(token.price)}</span></span
         >
         <div class="interaction-pane">
           {#each Buttons as { title, func, active }, i}
-            {#if active({ id, name, description, price })}
+            {#if active(token)}
               <button
                 class="side-button"
                 on:click={() => {
-                  func({ id, name, description, price })
+                  func(token)
                 }}
               >
                 {title}
@@ -59,8 +71,11 @@
     </div>
     <div slot="footer" let:store={{ setFalse }} />
   </Modal>
-<!-- </Lazy> -->
+{:else}
+  <div>loading</div>
+{/if}
 
+<!-- </Lazy> -->
 <style lang="scss">
   .interaction-pane {
     display: flex;
