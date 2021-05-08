@@ -1,13 +1,14 @@
 <script lang="ts">
   import FlowEntry from '$lib/components/flow-entry.svelte'
   import { AllTokensStore } from '$lib/secret-manufaktur/token-store'
-  import type {PublicToken} from '$lib/secret-manufaktur/token-store'
-
+  import type { PublicToken } from '$lib/secret-manufaktur/token-store'
+  import type { FlowButton } from '$lib/secret-manufaktur/types'
+  import { buttons } from '$lib/secret-manufaktur/buttonSets'
 
   let myTokens: PublicToken[] = []
   export let predicate: (token: PublicToken) => boolean = undefined
 
-  export let Buttons: { title: string; func: (token: PublicToken) => void }[] = []
+  export let Buttons: FlowButton[] = buttons
 
   $: {
     myTokens = []
@@ -19,8 +20,6 @@
       }
     })
   }
-
-
 </script>
 
 <div class="flow-container">
