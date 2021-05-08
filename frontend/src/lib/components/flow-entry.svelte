@@ -7,7 +7,6 @@
   import Lazy from 'svelte-lazy'
   import Modal from '$lib/components/modal.svelte'
   import { fly } from 'svelte/transition'
-  import type { PublicToken } from '$lib/secret-manufaktur/token-store'
   import type { FlowButton } from '$lib/secret-manufaktur/types'
 
   export let Buttons: FlowButton[] = []
@@ -15,6 +14,7 @@
   function numberWithCommas(x:string) {
     return x ? (Number(x)/1000000).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')+' SCRT': 'Not for sale'
   }
+
 </script>
 
 <Lazy height={250} fadeOption={{ delay: 200, duration: 600 }} placeholder={''} class="flow-lazy">

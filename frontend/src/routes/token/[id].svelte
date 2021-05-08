@@ -12,11 +12,15 @@
   import { buttons } from '$lib/secret-manufaktur/buttonSets'
   import { fly } from 'svelte/transition'
   import Modal from '$lib/components/modal.svelte'
-import { goto } from '$app/navigation';
+  import { goto } from '$app/navigation'
   export let token_id: string
 
   const Buttons = buttons
-
+  function numberWithCommas(x: string) {
+    return x
+      ? (Number(x) / 1000000).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ' SCRT'
+      : 'Not for sale'
+  }
   let token = undefined
   $: {
     token = $AllTokensStore.find(t => t.id == token_id)
@@ -25,7 +29,12 @@ import { goto } from '$app/navigation';
 </script>
 
 {#if token !== undefined}
-  <Modal open={true} onClose={() =>{goto('/')}}>
+  <Modal
+    open={true}
+    onClose={() => {
+      goto('/')
+    }}
+  >
     <div
       class="flow-card"
       slot="trigger"
@@ -42,11 +51,11 @@ import { goto } from '$app/navigation';
     >
       <div class="image-detail" />
       <div class="side-content" in:fly={{ x: -200, duration: 1000 }}>
-        <span class="side-header">token.name}</span>
+        <span class="side-header">{token.name}</span>
         <hr class="side-separator" />
         <span class="side-description">{token.description}</span>
         <span class="side-price"
-          >Price: <span class="underlined-text">{1}</span></span
+          >Price: <span class="underlined-text">{numberWithCommas(token.price)}</span></span
         >
         <div class="interaction-pane">
           {#each Buttons as { title, func, active }, i}
@@ -79,7 +88,7 @@ import { goto } from '$app/navigation';
     width: 250px;
     height: 250px;
     position: relative;
-    display:none;
+    display: none;
   }
   .flow-lazy {
     width: 100%;
