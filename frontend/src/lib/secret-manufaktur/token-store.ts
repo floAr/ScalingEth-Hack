@@ -9,6 +9,10 @@ export type PublicToken = {
   price?: string | null
 }
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 export const sortTokens = (tokens: PublicToken[]) => {
   return tokens.sort((t1, t2) => {
     return Number.parseInt(t1.id) < Number.parseInt(t2.id) ? 1 : -1
@@ -23,13 +27,36 @@ export const updateToken = async (tokenId: string) => {
   })
 }
 
-export const loadTokens = async () => {
-  const tokens = await tokenContract.SendQuery({ all_tokens: {} })
-  let token
-
-  for (const element of tokens.token_list.tokens.reverse()) {
-    updateToken(element)
+const loadTokenBatch = async (start: number, batch_size: number) => {
+  for (let i = 0; i <= batch_size; i++) {
+    if (start - i >= 0) {
+      console.log('loading', start - i)
+      updateToken((start - i).toString())
+    }
+    else
+      break;
   }
+  if (start - batch_size - 1 > 0) {
+    await sleep(1000)
+    loadTokenBatch(start - batch_size - 1, batch_size)
+  }
+}
+
+export const loadTokens = async () => {
+  const num_tokens = (await tokenContract.SendQuery({ num_tokens: {} })).num_tokens.count
+  loadTokenBatch(num_tokens - 1, 5)
+}
+
+export const getToken = async (tokenId: string):Promise<PublicToken> => {
+  let token = undefined
+  AllTokensStore.subscribe(value => {
+    token = value.find(t => { return t.id === tokenId })
+  })
+  if (token)
+    return token;
+    updateToken(tokenId)
+    const content =(await tokenContract.SendQuery({ nft_info: { token_id: tokenId } })).nft_info
+    return {...content,id: tokenId}
 }
 
 export const isMyToken = (tokenId: string) => {
