@@ -1,10 +1,11 @@
 <script lang="ts">
   import { browser } from '$app/env'
-import Connector from '$lib/components/connector.svelte'
+  import Connector from '$lib/components/connector.svelte'
   import { selectedAccount } from '$lib/modules/secret/secret-store'
   import { mintContract, tokenContract } from '$lib/secret-manufaktur/contract-interaction'
   import type { ImageApiResponseData } from '$lib/secret-manufaktur'
   import { AllTokensStore } from '$lib/secret-manufaktur/token-store'
+  import LoadingAnimation from '$lib/components/loadingAnimation.svelte'
 
   // import { getFile, storeFile } from '$lib/modules/ipfs/ipfs-store'
 
@@ -76,7 +77,7 @@ import Connector from '$lib/components/connector.svelte'
   <title>mint</title>
 </svelte:head>
 
-<Connector redirect={'/mint'}/>
+<Connector redirect={'/mint'} />
 <div>
   <div class="mint-container">
     <span class="mint-header">
@@ -98,6 +99,10 @@ import Connector from '$lib/components/connector.svelte'
             >
               Choose Image
             </span>
+          </div>
+        {:else if state !== 'ready' && state !== 'done'}
+          <div class="img-selector-container">
+            <LoadingAnimation />
           </div>
         {/if}
         <div class="img-selector-background" />
@@ -172,13 +177,13 @@ import Connector from '$lib/components/connector.svelte'
     &::before {
       content: '';
       position: absolute;
-      top: 5%;
-      left: 0;
-      width: 100%;
-      height: 90%;
+      top: 7.5%;
+      left: 2.5%;
+      width: 95%;
+      height: 85%;
       z-index: 10;
-      border-top: 2px solid var(--theme-colors-text);
-      border-bottom: 2px solid var(--theme-colors-text);
+      border-top: 3px solid var(--theme-colors-text);
+      border-bottom: 3px solid var(--theme-colors-text);
       border-radius: 2px;
       transform: scaleX(0);
 
@@ -187,13 +192,13 @@ import Connector from '$lib/components/connector.svelte'
     &::after {
       content: '';
       position: absolute;
-      top: 0;
-      left: 5%;
-      width: 90%;
-      height: 100%;
+      top: 2.5%;
+      left: 7.5%;
+      width: 85%;
+      height: 95%;
       z-index: 10;
-      border-left: 2px solid var(--theme-colors-text);
-      border-right: 2px solid var(--theme-colors-text);
+      border-left: 3px solid var(--theme-colors-text);
+      border-right: 3px solid var(--theme-colors-text);
       border-radius: 2px;
       transform: scaleY(0);
 
@@ -269,11 +274,18 @@ import Connector from '$lib/components/connector.svelte'
     z-index: 10;
   }
 
-  button:disabled {
-    border: 1px solid #999999;
-    background-color: #cccccc;
-    color: #666666;
+  button:disabled::before {
+    bottom: 0;
+    z-index: -1;
+    opacity: 0.5;
+    color: var(--theme-colors-background);
+    border: none;
   }
+
+  button:disabled {
+    pointer-events: none;
+  }
+
   .mint-input-wrapper {
     margin: 6px 0;
     width: 45vw;

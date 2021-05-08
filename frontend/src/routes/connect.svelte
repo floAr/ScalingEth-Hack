@@ -70,7 +70,7 @@
     justify-content: center;
     flex-direction: column;
     align-items: center;
-    animation: moving 1.6s infinite;
+    animation: moving 2s infinite;
   }
 
   @keyframes moving {
