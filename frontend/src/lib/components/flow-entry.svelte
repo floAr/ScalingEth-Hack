@@ -8,6 +8,16 @@
   import Modal from '$lib/components/modal.svelte'
   import { fly } from 'svelte/transition'
 
+  type PublicToken = {
+    id: string
+    description?: string | null
+    image?: string | null
+    name?: string | null
+    price?: string | null
+  }
+
+  export let Buttons: { title: string; func: (token: PublicToken) => void }[] = []
+
   function numberWithCommas(x) {
     return x ? x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') : 'Not for sale'
   }
@@ -38,22 +48,16 @@
           >Price: <span class="underlined-text">{numberWithCommas(price)}</span></span
         >
         <div class="interaction-pane">
-          <button
-            class="side-button"
-            on:click={() => {
-              console.log('bought')
-            }}
-          >
-            buy me
-          </button>
-          <button
-            class="side-button"
-            on:click={() => {
-              console.log('bought')
-            }}
-          >
-            buy me
-          </button>
+          {#each Buttons as { title, func }, i}
+            <button
+              class="side-button"
+              on:click={() => {
+                func({ id, name, description, price })
+              }}
+            >
+              {title}
+            </button>
+          {/each}
         </div>
       </div>
     </div>
