@@ -13,8 +13,8 @@
     await toastStore.enableToast()
   })
 </script>
-
-<Flow Buttons={[{ title: 'buy me', func: t => console.log('bought', t.name, 'for', t.price) }]} />
+<!-- Buttons={[{ title: 'buy me', func: t => console.log('bought', t.name, 'for', t.price) }]} -->
+<Flow />
 
 <style lang="scss">
 </style>
