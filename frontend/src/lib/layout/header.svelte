@@ -112,6 +112,10 @@
     text-decoration: none;
   }
 
+  .header-link a:link {
+    color: var(--theme-colors-text);
+  }
+
   .header-link::before {
     position: absolute;
     bottom: 0;
