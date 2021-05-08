@@ -8,9 +8,8 @@
   import Modal from '$lib/components/modal.svelte'
   import { fly } from 'svelte/transition'
   import type { PublicToken } from '$lib/secret-manufaktur/token-store'
-import type { FlowButton } from '$lib/secret-manufaktur/types';
+  import type { FlowButton } from '$lib/secret-manufaktur/types'
 
- 
   export let Buttons: FlowButton[] = []
 
   function numberWithCommas(x) {
@@ -43,16 +42,16 @@ import type { FlowButton } from '$lib/secret-manufaktur/types';
           >Price: <span class="underlined-text">{numberWithCommas(price)}</span></span
         >
         <div class="interaction-pane">
-          {#each Buttons as { title, func ,active}, i}
-          {#if active({ id, name, description, price })}
-            <button
-              class="side-button"
-              on:click={() => {
-                func({ id, name, description, price })
-              }}
-            >
-              {title}
-            </button>
+          {#each Buttons as { title, func, active }, i}
+            {#if active({ id, name, description, price })}
+              <button
+                class="side-button"
+                on:click={() => {
+                  func({ id, name, description, price })
+                }}
+              >
+                {title}
+              </button>
             {/if}
           {/each}
         </div>
