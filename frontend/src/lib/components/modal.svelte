@@ -9,7 +9,7 @@
   import { booleanStore } from '$lib/booleanStore'
 
   export let open = false
-  export let onClose: () => void = ()=>{}
+  export let onClose: () => void = () => {}
 
   const store = booleanStore(open)
   const { isOpen, setTrue, setFalse } = store
