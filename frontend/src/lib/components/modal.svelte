@@ -8,12 +8,20 @@
 <script lang="ts">
   import { booleanStore } from '$lib/booleanStore'
 
-  const store = booleanStore(false)
+  export let open = false
+  export let onClose: () => void = ()=>{}
+
+  const store = booleanStore(open)
   const { isOpen, setTrue, setFalse } = store
+
+  function closeModal() {
+    setFalse()
+    onClose()
+  }
   function keydown(e: KeyboardEvent) {
     e.stopPropagation()
     if (e.key === 'Escape') {
-      setFalse()
+      closeModal()
     }
   }
   function transitionend(e: TransitionEvent) {
@@ -53,7 +61,7 @@
 </slot>
 {#if $isOpen}
   <div class="modal" use:modalAction tabindex="0">
-    <div class="backdrop" on:click={setFalse} />
+    <div class="backdrop" on:click={closeModal} />
 
     <div class="content-wrapper">
       <div class="content">
@@ -64,7 +72,7 @@
         <!-- fallback -->
         <div>
           <h1>Your Modal Footer Goes Here...</h1>
-          <button on:click={setFalse}>Close</button>
+          <button on:click={closeModal}>Close</button>
         </div>
       </slot>
     </div>
