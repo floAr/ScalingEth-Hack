@@ -5,6 +5,17 @@
     {
       "type": "object",
       "required": [
+        "withdraw"
+      ],
+      "properties": {
+        "withdraw": {
+          "type": "object"
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
         "set_price"
       ],
       "properties": {

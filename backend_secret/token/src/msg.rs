@@ -95,6 +95,7 @@ pub struct PostInitCallback {
 #[derive(Serialize, Deserialize, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum HandleMsg {
+    Withdraw {},
     // Set a price for a token you own, stored in public metadata
     SetPrice {
         token_id: String,

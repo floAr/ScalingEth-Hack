@@ -114,6 +114,7 @@ pub fn handle<S: Storage, A: Api, Q: Querier>(
     let mut config: Config = load(&deps.storage, CONFIG_KEY)?;
 
     let response = match msg {
+        HandleMsg::Withdraw {} => withdraw(deps, env, &config),
         HandleMsg::SetPrice { token_id, price } => set_price(
             deps,
             env,
@@ -494,6 +495,36 @@ pub fn batch_mint<S: Storage, A: Api, Q: Querier>(
     })
 }
 
+pub fn withdraw<S: Storage, A: Api, Q: Querier>(
+    deps: &mut Extern<S, A, Q>,
+    env: Env,
+    config: &Config,
+) -> HandleResult {
+    let contract_raw = deps.api.canonical_address(&env.contract.address)?;
+    let res = deps
+        .querier
+        .query_balance(&env.contract.address, "uscrt")?
+        .amount;
+
+    let amount: Vec<Coin> = vec![Coin {
+        denom: "uscrt".to_string(),
+        amount: res,
+    }];
+    let mut messages: Vec<CosmosMsg> = Vec::new();
+    messages.push(CosmosMsg::Bank(BankMsg::Send {
+        from_address: env.contract.address,
+        to_address: deps.api.human_address(&config.admin)?,
+        amount,
+    }));
+    Ok(HandleResponse {
+        messages: messages,
+        log: vec![],
+        data: Some(to_binary(&HandleAnswer::SetPublicMetadata {
+            status: Success,
+        })?),
+    })
+}
+
 pub fn set_price<S: Storage, A: Api, Q: Querier>(
     deps: &mut Extern<S, A, Q>,
     env: Env,
@@ -649,13 +680,15 @@ pub fn buy<S: Storage, A: Api, Q: Querier>(
                     || env.message.sent_funds[0].denom != *"uscrt"
                 {
                     return Err(StdError::generic_err(
-                        "You must pay exactly 1 SCRT to buy a pack of heroes",
+                        "You must pay exactly the price to buy a pack of heroes",
                     ));
                 }
+                // let price_after_fee = Uint128(price /100 *97);
+                let price_after_fee = price.multiply_ratio(97u128, 100u128);
                 // send money
                 let amount: Vec<Coin> = vec![Coin {
                     denom: "uscrt".to_string(),
-                    amount: price,
+                    amount: price_after_fee,
                 }];
                 messages.push(CosmosMsg::Bank(BankMsg::Send {
                     from_address: deps.api.human_address(&contract_raw)?,
@@ -685,7 +718,7 @@ pub fn buy<S: Storage, A: Api, Q: Querier>(
             token_ids: vec![token_id.to_string()],
             memo: None,
         }]);
-        let _m = send_list(deps, env, config, &sender_raw, transfers, None)?;
+        let _m = send_list(deps, env, config, &token.owner, transfers, None)?;
 
         Ok(HandleResponse {
             messages: messages,
