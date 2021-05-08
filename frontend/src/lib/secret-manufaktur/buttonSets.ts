@@ -26,10 +26,7 @@ export const buttons: FlowButton[] = [
     // unlist only if it is my token and has a price set
     {
         title: 'unlist', func: (t) => {
-            const price = getPrice()
-            if (price >= 0) {
-                tokenContract.SendTransaction({ unlist: { token_id: t.id } })
-            }
+            tokenContract.SendTransaction({ reset_price: { token_id: t.id } })
         }, active: (t) => { return t.price != null && isMyToken(t.id) }
     },
     // change price only if it is my token and has a price set

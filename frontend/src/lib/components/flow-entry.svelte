@@ -12,8 +12,8 @@
 
   export let Buttons: FlowButton[] = []
 
-  function numberWithCommas(x) {
-    return x ? x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') : 'Not for sale'
+  function numberWithCommas(x:string) {
+    return x ? (Number(x)/1000000).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')+' SCRT': 'Not for sale'
   }
 </script>
 
