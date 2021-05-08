@@ -7,7 +7,6 @@ const loadTata = async (set) => {
     if (browser) {
         if (typeof document != null && typeof document != null) {
             const tata = (await import('tata-js'));
-            console.log(tata);
             set(tata)
         }
     }

@@ -1,8 +1,11 @@
 <script lang="ts">
   import Flow from '$lib/components/flow.svelte'
-  import { MyTokensStore } from '$lib/secret-manufaktur/token-store'
+  import { loadTokens, MyTokensStore } from '$lib/secret-manufaktur/token-store'
   import type { PublicToken } from '$lib/secret-manufaktur/token-store'
   import Connector from '$lib/components/connector.svelte'
+
+
+  loadTokens()
 
   const isMyToken = (token: PublicToken) => {
     return $MyTokensStore.includes(token.id)

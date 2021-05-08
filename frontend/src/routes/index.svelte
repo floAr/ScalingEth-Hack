@@ -11,7 +11,6 @@
 
   onMount(async () => {
     await toastStore.enableToast()
-    $toastStore.info('Toaster', 'Hello from the toast')
   })
 </script>
 

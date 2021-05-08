@@ -1,8 +1,6 @@
 <script lang="ts">
   import { status } from '$lib/modules/secret/secret-store'
   import { blur } from 'svelte/transition';
-
-console.log($status)
 </script>
 
 <div class="logo_container_row">
