@@ -17,7 +17,7 @@
 
 </script>
 
-<Lazy height={250} fadeOption={{ delay: 200, duration: 600 }} placeholder={''} class="flow-lazy">
+<!-- <Lazy height={250} fadeOption={{ delay: 200, duration: 600 }} placeholder={''} class="flow-lazy"> -->
   <Modal>
     <div
       class="flow-card"
@@ -59,7 +59,7 @@
     </div>
     <div slot="footer" let:store={{ setFalse }} />
   </Modal>
-</Lazy>
+<!-- </Lazy> -->
 
 <style lang="scss">
   .interaction-pane {
