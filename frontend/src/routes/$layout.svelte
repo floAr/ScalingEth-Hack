@@ -22,29 +22,29 @@
     name="description"
     content="secret manufaktur - privacy with NFT art on the secret network"
   />
-  <meta name="keywords" content="Svelte, SvelteKit, Svelte-kit, Tailwind, HTML, CSS, JavaScript" />
-  <meta name="author" content="@dansvel" />
+  <meta name="keywords" content="Secret Network, NFT, Art" />
+  <meta name="author" content="@florianuhde" />
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://metatags.io/" />
+  <meta property="og:url" content="https://priceless-lalande-b40c28.netlify.app/" />
   <meta property="og:title" content="secret manufaktur" />
-  <meta property="og:description" content="SvelteKit and Tailwind 2 toggle dark/light theme demo" />
+  <meta property="og:description" content="Secret Manufaktur brings privacy to NFT art. It allows artists creators to leverage secret networks privacy preserving smart contracts for their creations to enable on-chain unlockables, hidden ownership and private transactions." />
   <meta
     property="og:image"
-    content="https://github.com/dansvel/sveltekit-typescript-postcss-tailwind2/raw/master/screenshot.png"
+    content="https://github.com/floAr/ScalingEth-Hack/blob/main/frontend/screenshot.png"
   />
 
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image" />
-  <meta property="twitter:url" content="https://metatags.io/" />
+  <meta property="twitter:url" content="https://priceless-lalande-b40c28.netlify.app/" />
   <meta property="twitter:title" content="secret manufaktur" />
   <meta
     property="twitter:description"
-    content="SvelteKit and Tailwind 2 toggle dark/light theme demo"
+    content="Secret Manufaktur brings privacy to NFT art. It allows artists creators to leverage secret networks privacy preserving smart contracts for their creations to enable on-chain unlockables, hidden ownership and private transactions."
   />
   <meta
     property="twitter:image"
-    content="https://github.com/dansvel/sveltekit-typescript-postcss-tailwind2/raw/master/screenshot.png"
+    content="https://github.com/floAr/ScalingEth-Hack/blob/main/frontend/screenshot.png"
   />
 </svelte:head>
 <TokenProvider />
