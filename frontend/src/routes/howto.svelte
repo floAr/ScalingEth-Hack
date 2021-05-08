@@ -1,8 +1,8 @@
 <script lang="ts">
-import { browser } from '$app/env';
+  import { browser } from '$app/env'
 
   import { goto } from '$app/navigation'
-  import { howtoStore } from '$lib/secret-manufaktur/howto-store'
+  import { howtoStore } from '$lib/secret-manufaktur/persistent-store'
 
   function launch() {
     if (browser) goto('/')
