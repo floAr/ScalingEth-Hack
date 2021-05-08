@@ -1,6 +1,7 @@
 <script lang="ts">
   import Mytokens from '$lib/components/mytokens.svelte'
   import type { PublicToken } from '$lib/secret-manufaktur/token-store'
+  import Connector from '$lib/components/connector.svelte'
 
   let predicate: (token: PublicToken) => boolean = undefined
 
@@ -14,7 +15,7 @@
     }
   }
 </script>
-
+<Connector redirect={'/collection'}/>
 <div class="collection-header">
   <button on:click={showAll}>All tokens</button>
   <button on:click={showOnSale}>On Sale</button>

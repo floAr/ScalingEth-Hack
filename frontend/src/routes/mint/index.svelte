@@ -1,5 +1,6 @@
 <script lang="ts">
   import { browser } from '$app/env'
+import Connector from '$lib/components/connector.svelte'
   import { selectedAccount } from '$lib/modules/secret/secret-store'
   import { mintContract, tokenContract } from '$lib/secret-manufaktur/contract-interaction'
   import type { ImageApiResponseData } from '$lib/secret-manufaktur/image-api'
@@ -22,53 +23,19 @@
     }
   }
 
-  async function handleUpload() {
-    if (browser) {
-      let formData = new FormData()
+  let state: 'ready' | 'uploading' | 'processing' | 'done' = 'ready'
 
+  async function handleUpload() {
+    state = 'uploading'
+    if (browser) {
       //Adding files to the formdata
       const axios = await import('axios')
-      // axios
-      //   .default({
-      //     // Endpoint to send files
-      //     url:
-      //       'https://prod-18.germanynorth.logic.azure.com:443/workflows/cf39482323884e73a2ff5053f06cc145/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=C1Ykrapemx4BLnzCe8MNUPdhBejMIyEFJxg4bci38y4',
-      //     method: 'POST',
-      //     headers: {
-      //       // Add any auth token here
-      //     },
-      //     // Attaching the form data
-      //     data: formData
-      //   })
-      //
 
       const base64 = await fetch(img)
       // first try using blob to get data, this errors out on larger files ------------------------------------
       const blob = await base64.blob()
       var data = blob
 
-      // second but this is not what we want   ------------------------------------
-      // const ab = await base64.arrayBuffer();
-      // console.log("ab: ",ab)
-      // var data = ab
-
-      // old approach using xml request ------------------------------------
-      // var xhr = new XMLHttpRequest()
-      // xhr.withCredentials = true
-
-      // xhr.addEventListener('readystatechange', function () {
-      //   if (this.readyState === 4) {
-      //     console.log(this.responseText)
-      //   }
-      // })
-      // xhr.addEventListener('progress', function(p){
-      //   console.log(this.status)
-      //   console.log(p)
-      // })
-
-      // xhr.open('POST', 'https://ipfsnode.azurewebsites.net/ipfs/upload')
-      // xhr.send(data)
-      // old approach using xml request ------------------------------------
       const response = await axios.default({
         method: 'post',
         url: 'https://ipfsnode.azurewebsites.net/ipfs/upload',
@@ -82,9 +49,6 @@
             'onUploadProgress progress',
             Math.round((progressEvent.loaded * 100) / progressEvent.total)
           )
-          // if (totalLength !== null) {
-          //     this.updateProgressBarValue(Math.round( (progressEvent.loaded * 100) / totalLength ));
-          // }
         }
       })
       return response.data as ImageApiResponseData
@@ -94,6 +58,7 @@
   async function mintImage() {
     const imgResponse = await handleUpload()
 
+    state = 'processing'
     const answer = await mintContract.SendTransaction({
       mint: {
         title,
@@ -103,19 +68,7 @@
       }
     })
     $ShouldUpdateTokens = true
-    // const answer =  await tokenContract.SendTransaction({
-    //   mint_nft: {
-    //     owner: $selectedAccount.address,
-    //     public_metadata: {
-    //       name: title,
-    //       description: description,
-    //       image: imgResponse.thumb.value.cid
-    //     },
-    //     private_metadata:{
-    //       image: imgResponse.fullRes.value.cid
-    //     }
-    //   }
-    // })
+    state = 'done'
     console.log(answer)
   }
 </script>
@@ -124,6 +77,7 @@
   <title>mint</title>
 </svelte:head>
 
+<Connector redirect={'/mint'}/>
 <div>
   <div class="mint-container">
     <span class="mint-header">
@@ -158,6 +112,7 @@
     </div>
     <button
       class="hae-button"
+      disabled={state !== 'ready' && state !== 'done'}
       on:click={() => {
         mintImage()
       }}
