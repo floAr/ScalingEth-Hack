@@ -33,7 +33,7 @@ import TokenProvider from '$lib/secret-manufaktur/token-provider.svelte';
 		grid-template-rows: auto 1fr auto;
 	}
 	.content {
-		min-height: 80vh;
+		min-height: 75vh;
 	}
 	:global(body) {
 		background-color: var(--theme-colors-background, initial);

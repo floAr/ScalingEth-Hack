@@ -72,6 +72,7 @@
     margin-top: auto;
   }
   .flow-card {
+    margin: 5px;
     width: 250px;
     height: 250px;
     position: relative;
@@ -157,6 +158,7 @@
     font-family: 'Cinzel Decorative';
     letter-spacing: 0px;
     position: relative;
+    font-weight: bold;
     margin: 0 5px;
   }
 
