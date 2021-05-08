@@ -59,16 +59,16 @@
 </ThemeWrapper>
 
 <style lang="scss">
-  .parent {
-    display: grid;
-    grid-template-rows: auto 1fr auto;
-  }
-  .content {
-    min-height: 80vh;
-  }
-  :global(body) {
-    background-color: var(--theme-colors-background, initial);
-    color: var(--theme-colors-text, initial);
-    margin: 0;
-  }
+	.parent {
+		display: grid;
+		grid-template-rows: auto 1fr auto;
+	}
+	.content {
+		min-height: 75vh;
+	}
+	:global(body) {
+		background-color: var(--theme-colors-background, initial);
+		color: var(--theme-colors-text, initial);
+		margin: 0;
+	}
 </style>
