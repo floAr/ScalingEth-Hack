@@ -7,16 +7,10 @@
   import Lazy from 'svelte-lazy'
   import Modal from '$lib/components/modal.svelte'
   import { fly } from 'svelte/transition'
+  import type { PublicToken } from '$lib/secret-manufaktur/token-store'
 
-  type PublicToken = {
-    id: string
-    description?: string | null
-    image?: string | null
-    name?: string | null
-    price?: string | null
-  }
-
-  export let Buttons: { title: string; func: (token: PublicToken) => void }[] = []
+ 
+  export let Buttons: FlowButton[] = []
 
   function numberWithCommas(x) {
     return x ? x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') : 'Not for sale'

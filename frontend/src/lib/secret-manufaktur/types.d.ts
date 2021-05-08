@@ -1,3 +1,5 @@
+import type { PublicToken } from "./token-store";
+
 export interface ImageApiResponseData {
     fullRes: FullRes;
     thumb:   FullRes;
@@ -30,3 +32,10 @@ export interface Pin {
     status:  string;
     created: Date;
 }
+
+
+export interface FlowButton  {
+    title: string
+    func: (token: PublicToken) => void
+    active?: (token: PublicToken) => boolean
+  }

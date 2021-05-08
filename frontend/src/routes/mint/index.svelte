@@ -3,8 +3,8 @@
 import Connector from '$lib/components/connector.svelte'
   import { selectedAccount } from '$lib/modules/secret/secret-store'
   import { mintContract, tokenContract } from '$lib/secret-manufaktur/contract-interaction'
-  import type { ImageApiResponseData } from '$lib/secret-manufaktur/image-api'
-  import { AllTokensStore, ShouldUpdateTokens } from '$lib/secret-manufaktur/token-store'
+  import type { ImageApiResponseData } from '$lib/secret-manufaktur'
+  import { AllTokensStore } from '$lib/secret-manufaktur/token-store'
 
   // import { getFile, storeFile } from '$lib/modules/ipfs/ipfs-store'
 
@@ -67,7 +67,6 @@ import Connector from '$lib/components/connector.svelte'
         fullres: imgResponse.fullRes.value.cid
       }
     })
-    $ShouldUpdateTokens = true
     state = 'done'
     console.log(answer)
   }

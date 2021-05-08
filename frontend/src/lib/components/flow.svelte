@@ -1,14 +1,8 @@
 <script lang="ts">
   import FlowEntry from '$lib/components/flow-entry.svelte'
-  import { AllTokensStore, MyTokensStore } from '$lib/secret-manufaktur/token-store'
+  import { AllTokensStore } from '$lib/secret-manufaktur/token-store'
+  import type {PublicToken} from '$lib/secret-manufaktur/token-store'
 
-  type PublicToken = {
-    id: string
-    description?: string | null
-    image?: string | null
-    name?: string | null
-    price?: string | null
-  }
 
   let myTokens: PublicToken[] = []
   export let predicate: (token: PublicToken) => boolean = undefined

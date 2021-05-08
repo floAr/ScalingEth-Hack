@@ -12,6 +12,7 @@
   }
 
   let predicate: (token: PublicToken) => boolean = isMyToken
+  // let buttons : Flow.Button
 
   const showAll = () => {
     predicate = isMyToken
