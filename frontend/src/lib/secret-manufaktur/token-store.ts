@@ -32,6 +32,15 @@ export const loadTokens = async () => {
   }
 }
 
+export const isMyToken = (tokenId: string) => {
+  let mine = false;
+  MyTokensStore.subscribe(value => {
+    if (value)
+      mine = value.includes(tokenId)
+  })
+  return mine
+}
+
 export const AllTokensStore = writable<PublicToken[]>([])
 
 export const MyTokensStore = writable<string[]>([])
