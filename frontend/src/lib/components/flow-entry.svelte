@@ -74,6 +74,7 @@
   .flow-card {
     width: 250px;
     height: 250px;
+    position: relative;
   }
   .flow-lazy {
     width: 100%;
@@ -90,7 +91,6 @@
     background: var(--flow-cid);
     background-size: cover;
     margin: 1px;
-    position: relative;
     cursor: pointer;
 
     // &::before {
