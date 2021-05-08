@@ -16,6 +16,9 @@
       <div class="header-link">
         <a href=".">Schaufenster</a>
       </div>
+      <div class="header-link">
+        <a href="gallery">Gallery</a>
+      </div>
     </div>
     <div
       class="header-logo"
@@ -36,6 +39,10 @@
       <div class="header-link">
         <a href="mint">Manufaktur</a>
       </div>
+
+      <div class="header-link">
+        <a href="collection">Kollektion</a>
+      </div>
     </div>
   </div>
 </div>
@@ -43,6 +50,7 @@
 
 <style lang="scss">
   .nav-bar {
+    height: 12vh;
     display: flex;
     align-items: center;
     justify-content: space-around;
@@ -82,6 +90,8 @@
     display: flex;
     align-items: center;
     height: 100%;
+    width: 30vw;
+    justify-content: space-around;
   }
 
   .header-container.left {
@@ -109,7 +119,7 @@
     height: 2px;
     width: 100%;
     border-radius: 5px;
-    background-color: #bbb;
+    background-color: var(--theme-colors-text);
     transition: all 0.4s ease-in-out;
   }
 

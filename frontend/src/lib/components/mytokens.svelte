@@ -10,20 +10,25 @@
   }
   let myTokens: PublicToken[] = []
 
+  export let predicate: (token: PublicToken) => boolean = undefined
+
   $: {
+    myTokens = []
+    console.log('prev', myTokens)
+    console.log('pred', predicate)
     $MyTokensStore.forEach(id => {
-      if (
-        myTokens.find(token => {
-          return token?.id === id
-        }) === undefined
-      ) {
-        const token = $AllTokensStore.find(token => {
-          return token.id === id
-        })
-        console.log('token', id, token)
-        if (token !== undefined) myTokens = [...myTokens, token]
+      const token = $AllTokensStore.find(token => {
+        return token.id === id
+      })
+      if (token !== undefined) {
+        if (predicate === undefined) console.log('test1', predicate === undefined)
+        else console.log('test2', predicate(token))
+        if (predicate === undefined || predicate(token)) {
+          myTokens = [...myTokens, token]
+        }
       }
     })
+    console.log('After', myTokens)
   }
 </script>
 
