@@ -135,6 +135,9 @@
       position: absolute;
       transition: all 0.4s ease-in-out;
       font-family: 'Cinzel Decorative';
+      padding: 20px;
+      box-sizing: border-box;
+      text-align: center;
     }
     &:hover::after {
       opacity: 1;
