@@ -242,24 +242,31 @@ import Connector from '$lib/components/connector.svelte'
     font-weight: bold;
     color: var(--theme-colors-text);
     margin: 20px;
+    padding: 10px 15px;
     overflow: hidden;
     position: relative;
+    transition: all 0.4s ease-in-out;
   }
 
   .hae-button::before {
     position: absolute;
-    bottom: 0;
-    left: -100%;
+    bottom: -100%;
+    left: 0;
     content: '';
-    height: 2px;
+    height: 100%;
     width: 100%;
-    border-radius: 5px;
     background-color: var(--theme-colors-text);
     transition: all 0.4s ease-in-out;
   }
 
   .hae-button:hover::before {
-    left: 0;
+    bottom: 0;
+    z-index: -1;
+  }
+
+  .hae-button:hover {
+    color: var(--theme-colors-background);
+    z-index: 10;
   }
 
   button:disabled {

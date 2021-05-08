@@ -83,6 +83,7 @@
     width: 300%;
     left: -100%;
     text-align: center;
+    font-weight: bold;
   }
 
   .header-container {
