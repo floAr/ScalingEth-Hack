@@ -4,7 +4,7 @@ import type * as minter from "$lib/secret-manufaktur/contracts/minter";
 
 
 export const tokenContract = new Contract<snip721.InitMsg, snip721.QueryMsg, snip721.QueryAnswer, snip721.HandleMsg, snip721.HandleAnswer>(
-    'secret1c6atp9h8k46sa06dfm6k7gsy705zq4hpv92vn2'
+    'secret1fa5q9qpjkwzmke8yzmpugg3tsag89edw3ysef5'
 )
 
 export const mintContract = new Contract<minter.InitMsg, minter.QueryMsg, minter.QueryAnswer, minter.HandleMsg, minter.HandleAnswer>(
