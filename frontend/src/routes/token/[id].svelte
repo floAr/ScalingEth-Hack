@@ -185,16 +185,17 @@
     bottom: 2px;
     border-radius: 2px;
   }
-
   .image-detail {
     width: 350px;
     height: 350px;
     background: var(--flow-cid);
-    background-size: cover;
+    background-size: contain;
     margin: 1px;
     z-index: 10;
     border-radius: 2px;
     box-shadow: rgb(23 23 23 / 20%) 4px 3px 13px;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
   }
 
   .side-price {
