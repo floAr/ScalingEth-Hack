@@ -2,16 +2,15 @@
   import Modal from '$lib/components/modal.svelte'
   import { fly } from 'svelte/transition'
   import type { FlowButton } from '$lib/secret-manufaktur/types'
-  import { getToken } from '$lib/secret-manufaktur/token-store'  
+  import { getToken } from '$lib/secret-manufaktur/token-store'
   import LoadingAnimation from '$lib/components/loadingAnimation.svelte'
 
-  
   export let id: string = ''
   export let Buttons: FlowButton[] = []
 
-  export let modalOpen=false
-  export let modalOnClose: ()=>void = ()=>{}
-  export let modalOnOpen: ()=>void = ()=>{}
+  export let modalOpen = false
+  export let modalOnClose: () => void = () => {}
+  export let modalOnOpen: () => void = () => {}
 
   function numberWithCommas(x: string) {
     return x
@@ -25,10 +24,10 @@
   }
 
   const updateMyToken = async () => {
-    token = await getToken(id,true)
+    token = await getToken(id, true)
     modalOnOpen()
   }
-  
+
   $: {
     getMyToken()
   }
@@ -52,7 +51,11 @@
     >
       <div class="image-detail" />
       <div class="side-content" in:fly={{ x: -200, duration: 1000 }}>
-        <span class="side-header">{token.name}</span>
+        <div class="side-header-container">
+          <div />
+          <span class="side-header">{token.name}</span>
+          <a href="/token/{id}">share</a>
+        </div>
         <hr class="side-separator" />
         <span class="side-description">{token.description}</span>
         <span class="side-price"
@@ -171,7 +174,27 @@
       box-shadow: inset 0 -250px 0 0 var(--theme-colors-text);
     }
   }
+  .side-header-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+  }
 
+  .side-header-container a {
+    height: min-content;
+    font-size: small;
+    letter-spacing: 0px;
+    text-decoration: none;
+  }
+
+  .side-header-container a:link {
+    color: var(--theme-colors-text);
+  }
+
+  .side-header-container a:visited {
+    color: var(--theme-colors-text);
+  }
   .side-header {
     font-family: 'Cinzel Decorative';
     font-weight: bold;
