@@ -1,15 +1,11 @@
 <script lang="ts">
   export let id: string = ''
-  // export let name: string = ''
-  // export let description: string = ''
-  // export let cid: string = ''
-  // export let price: string | undefined = undefined
-  import Lazy from 'svelte-lazy'
   import Modal from '$lib/components/modal.svelte'
   import { fly } from 'svelte/transition'
   import type { FlowButton } from '$lib/secret-manufaktur/types'
   import { getToken } from '$lib/secret-manufaktur/token-store'
 
+  import LoadingAnimation from '$lib/components/loadingAnimation.svelte'
   export let Buttons: FlowButton[] = []
 
   function numberWithCommas(x: string) {
@@ -21,10 +17,9 @@
   let token = undefined
   const getMyToken = async () => {
     token = await getToken(id)
-    console.log(token)
   }
 
-  $:{
+  $: {
     getMyToken()
   }
 </script>
@@ -72,7 +67,9 @@
     <div slot="footer" let:store={{ setFalse }} />
   </Modal>
 {:else}
-  <div>loading</div>
+  <div class="flow-card loading">
+    <LoadingAnimation />
+  </div>
 {/if}
 
 <!-- </Lazy> -->
@@ -87,6 +84,11 @@
     width: 250px;
     height: 250px;
     position: relative;
+  }
+  .flow-card.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   .flow-lazy {
     width: 100%;
@@ -236,7 +238,7 @@
   }
 
   .side-button:hover {
-    box-shadow: inset 0px -50px 0 0 var(--theme-colors-text); 
+    box-shadow: inset 0px -50px 0 0 var(--theme-colors-text);
     color: var(--theme-colors-background);
   }
 
