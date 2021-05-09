@@ -1,12 +1,17 @@
 <script lang="ts">
-  export let id: string = ''
   import Modal from '$lib/components/modal.svelte'
   import { fly } from 'svelte/transition'
   import type { FlowButton } from '$lib/secret-manufaktur/types'
-  import { getToken } from '$lib/secret-manufaktur/token-store'
-
+  import { getToken } from '$lib/secret-manufaktur/token-store'  
   import LoadingAnimation from '$lib/components/loadingAnimation.svelte'
+
+  
+  export let id: string = ''
   export let Buttons: FlowButton[] = []
+
+  export let modalOpen=false
+  export let modalOnClose: ()=>void = ()=>{}
+  export let modalOnOpen: ()=>void = ()=>{}
 
   function numberWithCommas(x: string) {
     return x
@@ -19,6 +24,11 @@
     token = await getToken(id)
   }
 
+  const updateMyToken = async () => {
+    token = await getToken(id,true)
+    modalOnOpen()
+  }
+  
   $: {
     getMyToken()
   }
@@ -26,14 +36,14 @@
 
 <!-- <Lazy height={250} fadeOption={{ delay: 200, duration: 600 }} placeholder={''} class="flow-lazy"> -->
 {#if token}
-  <Modal>
+  <Modal open={modalOpen} onOpen={updateMyToken} onClose={modalOnClose}>
     <div
       class="flow-card"
       slot="trigger"
-      let:setTrue
+      let:openModal
       style="--flow-cid: url('https://{token.image}.ipfs.dweb.link/'); --flow-name: '{token.name}';"
     >
-      <div class="flow-content" on:click={setTrue} />
+      <div class="flow-content" on:click={openModal} />
     </div>
     <!-- Modal / detail view -->
     <div

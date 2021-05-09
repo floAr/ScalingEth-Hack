@@ -7,17 +7,29 @@
 
 <script lang="ts">
   import { booleanStore } from '$lib/booleanStore'
+  import { onMount } from 'svelte'
 
   export let open = false
   export let onClose: () => void = () => {}
+  export let onOpen: () => void = () => {}
 
-  const store = booleanStore(open)
+  const store = booleanStore(false)
   const { isOpen, setTrue, setFalse } = store
+
+  function openModal() {
+    onOpen()
+    setTrue()
+  }
 
   function closeModal() {
     setFalse()
     onClose()
   }
+
+  onMount(() => {
+    if (open) openModal()
+  })
+
   function keydown(e: KeyboardEvent) {
     e.stopPropagation()
     if (e.key === 'Escape') {
@@ -55,9 +67,9 @@
   }
 </script>
 
-<slot name="trigger" {setTrue}>
+<slot name="trigger" {openModal}>
   <!-- fallback trigger to open the modal -->
-  <button on:click={setTrue}>Open</button>
+  <button on:click={openModal}>Open</button>
 </slot>
 {#if $isOpen}
   <div class="modal" use:modalAction tabindex="0">
