@@ -12,14 +12,19 @@
   export let token_id: string
 </script>
 
-<FlowEntry
-  id={token_id}
-  modalOpen={true}
-  modalOnClose={() => {
-    goto('/')
-  }}
-/>
+<div class="single-flow-container">
+  <FlowEntry
+    id={token_id}
+    modalOpen={true}
+    modalOnClose={() => {
+      goto('/')
+    }}
+  />
+</div>
 
 <style lang="scss">
   /* We need to set the display of the token card to none */
+  :global(.single-flow-container .flow-content) {
+    display: none;
+  }
 </style>
