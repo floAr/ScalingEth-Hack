@@ -27,11 +27,19 @@ export const updateToken = async (tokenId: string) => {
   })
 }
 
+export const updateTokenShallow = async (tokenId: string) => {
+  // const token = await tokenContract.SendQuery({ nft_info: { token_id: tokenId } })
+  AllTokensStore.update(tokens => {
+    const otherTokens = tokens.filter(t => t.id !== tokenId);
+    return sortTokens([...otherTokens, { id: tokenId }])
+  })
+}
+
 const loadTokenBatch = async (start: number, batch_size: number) => {
   for (let i = 0; i <= batch_size; i++) {
     if (start - i >= 0) {
       console.log('loading', start - i)
-      updateToken((start - i).toString())
+      updateTokenShallow((start - i).toString())
     }
     else
       break;
@@ -42,21 +50,24 @@ const loadTokenBatch = async (start: number, batch_size: number) => {
   }
 }
 
-export const loadTokens = async () => {
+export const loadTokens = async ():Promise<void> => {
   const num_tokens = (await tokenContract.SendQuery({ num_tokens: {} })).num_tokens.count
   loadTokenBatch(num_tokens - 1, 5)
 }
 
-export const getToken = async (tokenId: string):Promise<PublicToken> => {
-  let token = undefined
-  AllTokensStore.subscribe(value => {
-    token = value.find(t => { return t.id === tokenId })
-  })
-  if (token)
-    return token;
-    updateToken(tokenId)
-    const content =(await tokenContract.SendQuery({ nft_info: { token_id: tokenId } })).nft_info
-    return {...content,id: tokenId}
+export const getToken = async (tokenId: string, ignoreCache = false): Promise<PublicToken> => {
+  let token: PublicToken = undefined
+  if (!ignoreCache) {
+
+    AllTokensStore.subscribe(value => {
+      token = value.find(t => { return t.id === tokenId })
+    })
+    if (token?.image)
+      return token;
+  }
+  updateToken(tokenId)
+  const content = (await tokenContract.SendQuery({ nft_info: { token_id: tokenId } })).nft_info
+  return { ...content, id: tokenId }
 }
 
 export const isMyToken = (tokenId: string) => {

@@ -26,7 +26,9 @@
   <div class="flow-center">
     <div class="flow-grid">
       {#each myTokens as { name, description, image, price, id }, i}
-        <FlowEntry {id} {name} {description} cid={image} {price} {Buttons} />
+        {#key id}
+          <FlowEntry {id} {Buttons} />
+        {/key}
       {/each}
     </div>
   </div>
