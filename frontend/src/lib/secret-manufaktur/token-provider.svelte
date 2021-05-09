@@ -6,42 +6,6 @@ import { onMount } from 'svelte';
   import { tokenContract } from './contract-interaction'
   import { AllTokensStore, loadTokens, MyTokensStore } from './token-store'
 
-  // let vkey: string | undefined = undefined
-  // if (browser) {
-  //   viewingKey.subscribe(value => {
-  //     vkey = value
-  //   })
-  // }
-
-  // async function setViewingkey() {
-  //   if (browser) {
-  //     const entropy = SecretStore.getEntropy()
-  //     const viewingkey = await tokenContract.SendTransaction({
-  //       create_viewing_key: {
-  //         entropy,
-  //         padding: SecretStore.createPadding(entropy.length, 128)
-  //       }
-  //     })
-  //     viewingKey.set(viewingkey.viewing_key.key)
-  //     return viewingkey.viewing_key.key
-  //   }
-  //   return ''
-  // }
-
-  // async function loadTokens() {
-  //   const tokens = await tokenContract.SendQuery({ all_tokens: {} })
-  //   let token
-
-  //   for (const element of tokens.token_list.tokens.reverse()) {
-  //     if ($AllTokensStore.find(t => t.id === element) === undefined) {
-  //       token = await tokenContract.SendQuery({ nft_info: { token_id: element } })
-
-  //       AllTokensStore.update(tokens => {
-  //         return [...tokens, { ...token.nft_info, id: element }]
-  //       })
-  //     }
-  //   }
-  // }
 
   async function loadMyTokens() {
     if (browser) {
@@ -61,7 +25,7 @@ import { onMount } from 'svelte';
   if (browser) {
     if ($SecretStore.queryClient === null) {
       SecretStore.connect('holodeck-2').then(() => {
-        loadTokens()
+         loadTokens()
       })
     } else {
       loadTokens()
@@ -75,17 +39,16 @@ import { onMount } from 'svelte';
           if ($selectedAccount.address != null && $selectedAccount.address.length > 0) {
             loadMyTokens()
           }
-        loadTokens()
       }
     }
   }
 
-  // onMount(()=>{
-  //   if(browser){
-  //     window.setInterval(()=>{
-  //       loadTokens()
-  //     },1000)
-  //   }
-  // })
+  onMount(()=>{
+    if(browser){
+      window.setInterval(()=>{
+        loadTokens()
+      },25000)
+    }
+  })
 </script>
 <div/>
