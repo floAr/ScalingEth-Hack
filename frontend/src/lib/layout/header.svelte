@@ -14,7 +14,7 @@
   <div class="nav-container">
     <div class="header-container left">
       <div class="header-link">
-        <a href=".">Schaufenster</a>
+        <a href="/">Schaufenster</a>
       </div>
       <div class="header-link">
         <a href="gallery">Gallery</a>
