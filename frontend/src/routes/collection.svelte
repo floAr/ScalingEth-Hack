@@ -50,7 +50,7 @@
   .box {
     margin-bottom: 10px;
     padding: 40px;
-    border: 1px solid var(--theme-colors-text);
+    border: 2px solid var(--theme-colors-text);
     border-radius: 0 0 0.5rem 0.5rem;
     border-top: 0;
   }
@@ -60,33 +60,46 @@
     padding-left: 0;
     margin-bottom: 0;
     list-style: none;
-    border-bottom: 1px solid var(--theme-colors-text);
+    border-bottom: 2px solid var(--theme-colors-text);
   }
   li {
-    margin-bottom: -1px;
+    margin-bottom: -2px;
     flex: 1;
     text-align: center;
+    position: relative;
+    z-index: 2;
   }
 
   span {
-    border: 1px solid transparent;
-    border-top-left-radius: 0.25rem;
-    border-top-right-radius: 0.25rem;
     display: block;
     padding: 0.5rem 1rem;
     cursor: pointer;
     font-family: 'Cinzel Decorative', cursive;
-    font-weight: 600;
+    font-weight: bold;
     font-size: medium;
+    transition: all 0.4s ease-in-out;
   }
 
-  span:hover {
-    border-color: var(--theme-colors-background-contrast) var(--theme-colors-background-contrast) var(--theme-colors-text);
+  li:nth-child(1) span:hover {
+    box-shadow: inset -50vw 0px 0 0 var(--theme-colors-text); 
+    color: var(--theme-colors-background);
+  }
+
+  li:nth-child(2) span:hover {
+    box-shadow: inset 50vw 0px 0 0 var(--theme-colors-text); 
+    color: var(--theme-colors-background);
+  }
+
+  li:nth-child(1).active span {
+    box-shadow: inset -50vw 0px 0 0 var(--theme-colors-text); 
+  }
+
+  li:nth-child(2).active span {
+    box-shadow: inset 50vw 0px 0 0 var(--theme-colors-text); 
   }
 
   li.active > span {
-    color: #495057;
-    background-color: var(--theme-colors-background);
-    border-color: var(--theme-colors-text) var(--theme-colors-text) var(--theme-colors-background);
+    color: var(--theme-colors-background);     
+    letter-spacing: 1px;                                              
   }
 </style>
