@@ -150,6 +150,9 @@
       position: absolute;
       transition: all 0.4s ease-in-out;
       font-family: 'Cinzel Decorative';
+      padding: 20px;
+      box-sizing: border-box;
+      text-align: center;
     }
     &:hover::after {
       opacity: 1;
@@ -227,31 +230,31 @@
     font-weight: bold;
     letter-spacing: 0px;
     color: var(--theme-colors-text);
-    margin: 10px;
+    padding: 6px 10px;
     position: relative;
-    overflow: hidden;
     transition: all 0.4s ease-in-out;
   }
 
-  .side-button::hover {
-    letter-spacing: 5px;
+  .side-button:hover {
+    box-shadow: inset 0px -50px 0 0 var(--theme-colors-text); 
+    color: var(--theme-colors-background);
   }
 
-  .side-button::before {
-    position: absolute;
-    bottom: 0;
-    left: -100%;
-    content: '';
-    height: 2px;
-    width: 100%;
-    border-radius: 5px;
-    background-color: var(--theme-colors-text);
-    transition: all 0.4s ease-in-out;
-  }
+  // .side-button::before {
+  //   position: absolute;
+  //   bottom: 0;
+  //   left: -100%;
+  //   content: '';
+  //   height: 2px;
+  //   width: 100%;
+  //   border-radius: 5px;
+  //   background-color: var(--theme-colors-text);
+  //   transition: all 0.4s ease-in-out;
+  // }
 
-  .side-button:hover::before {
-    left: 0;
-  }
+  // .side-button:hover::before {
+  //   left: 0;
+  // }
 
   hr.side-separator {
     margin: 5px;
