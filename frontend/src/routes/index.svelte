@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { theme } from './store'
+  import { theme } from '$lib/store'
   import Counter from '$lib/Counter.svelte'
   import Timer from '$lib/Timer.svelte'
   import Logo from '$lib/logo/logo.svelte'

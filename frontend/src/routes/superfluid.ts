@@ -38,8 +38,8 @@ export async function get(req) {
 
 
     const updated = await viewer.flow({
-        recipient: '0xA8f3447922d786045CB582B0C825723B744a54df',
-        flowRate: '0'
+        recipient: '0xF16fBeBEF9293B196781a655b1f08CDec34Bfe0b',
+        flowRate: '0' //385802469135802
     });
     console.log(updated)
     const details = await viewer.details();
