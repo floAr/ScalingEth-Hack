@@ -8,7 +8,7 @@
     SecretStore.subscribe(value => {
       connected = value.queryClient !== undefined
     })
-    if (!connected) await SecretStore.connect('holodeck-2')
+    await SecretStore.connect('holodeck-2')
     return { status: 200 }
   }
 </script>
