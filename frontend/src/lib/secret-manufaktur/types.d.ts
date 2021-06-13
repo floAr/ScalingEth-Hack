@@ -36,6 +36,6 @@ export interface Pin {
 
 export interface FlowButton  {
     title: string
-    func: (token: PublicToken) => void
+    func: (token: PublicToken) => Promise<void>
     active?: (token: PublicToken) => boolean
   }

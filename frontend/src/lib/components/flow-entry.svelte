@@ -66,8 +66,9 @@
             {#if active(token)}
               <button
                 class="side-button"
-                on:click={() => {
-                  func(token)
+                on:click={async () => {
+                  await func(token)
+                  updateMyToken()
                 }}
               >
                 {title}
